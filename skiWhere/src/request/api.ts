@@ -12,7 +12,7 @@ export class ServerRequest{
         return this._instance || (this._instance = new this(http,loadingCtrl));
     }
     public getGitStats(){
-        return this.apiGetDirectCall("https://api.github.com/repos/Nxtmind/cocos2d-html5/stats/contributors")
+        return this.apiGetDirectCall("https://api.github.com/repos/jmm9683/461LGroupProj/stats/contributors")
             .then((response : string)=>{
                 return JSON.parse(response)
             });  
