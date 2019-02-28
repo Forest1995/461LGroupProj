@@ -8,7 +8,6 @@ import { ServerRequest } from '../../request/api'
  * See https://ionicframework.com/docs/components/#navigation for more info on
  * Ionic pages and navigation.
  */
-
 @IonicPage()
 @Component({
   selector: 'page-about',
@@ -20,7 +19,7 @@ export class AboutPage {
   constructor(public navCtrl: NavController, public navParams: NavParams) {
     this.api = ServerRequest.Instance();
   }
-  
+
   ionViewDidLoad() {
     console.log('ionViewDidLoad AboutPage');
     this.api.getGitStats().then((data:any)=>{
