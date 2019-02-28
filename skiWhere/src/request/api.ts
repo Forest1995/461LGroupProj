@@ -17,7 +17,13 @@ export class ServerRequest{
                 return JSON.parse(response)
             });  
 
-    } 
+    }
+    public getGitIssues(){
+        return this.apiGetDirectCall("https://api.github.com/repos/jmm9683/461LGroupProj/issues")
+            .then((response : string)=>{
+                return JSON.parse(response)
+            });  
+    }  
     private presentLoading() {
         let loading = this.loadingCtrl.create({
           content: 'Please wait...'

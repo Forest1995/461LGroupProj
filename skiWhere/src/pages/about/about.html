@@ -6,18 +6,78 @@
 -->
 <ion-header>
   <ion-navbar>
-    <ion-title>about</ion-title>
+    <ion-title>About Us!</ion-title>
   </ion-navbar>
 </ion-header>
 
 <ion-content padding>
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>SkiWhere</ion-card-title>
+    </ion-card-header>  
+    <ion-card-content>        
+        This app will combine ski resorts <ion-icon name="flag"></ion-icon>, weather <ion-icon name="rainy"></ion-icon>, travel <ion-icon name="jet"></ion-icon>
+        , and lodging information <ion-icon name="home"></ion-icon> and availability in order to help the user (anyone looking for a fun trip!) select and create the best ski trip with their specific criteria and navigate to the specific websites to book the trip. - Team Sparrow
+        <ion-icon name="logo-twitter"></ion-icon>
+    </ion-card-content>
+  </ion-card>  
   <ion-list id="users">
     <ion-item color="none" *ngFor="let u of users">
       <ion-thumbnail item-left>
         <img [src]="u.avatar" />
       </ion-thumbnail>
-      <ion-label>{{u.name}}</ion-label>
-      <ion-label slot="end">{{u.count}} commits</ion-label>
+      <ion-label>
+          <ion-grid>
+              <ion-row>
+                <ion-col>{{u.bio_details.real_name}}</ion-col>
+                <ion-col>@{{u.name}}</ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-col>{{u.bio_details.job}}</ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-col text-wrap>{{u.bio_details.bio}}</ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-col>Major: ECE</ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-col>{{u.count}} commits, {{u.issues}} issues</ion-col>
+              </ion-row>
+          </ion-grid>
+      </ion-label>
+      
     </ion-item>
   </ion-list>
+  <ion-card>
+      <ion-card-header>
+        <ion-card-title>App Tools:</ion-card-title>
+      </ion-card-header>  
+      <ion-card-content>
+        Ionic framework - adds native looking css to html design<br>
+        Angular - Binds data to UI with clean code<br>
+        Typescript - Allows for strongly typed javascript code to ease development
+        Visual Studio Code - Lightweight powerful editor with Typescript support
+      </ion-card-content>
+  </ion-card>
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Data sources:</ion-card-title>
+    </ion-card-header>  
+    <ion-card-content>
+      Weather.com - Weather Api<br>
+      OnTheSnow.com - Resort Api<br>
+      Flights.com - Flights Api<br>
+      Hotels.com - Hotels Api
+    </ion-card-content>
+  </ion-card>
+  <ion-card>
+      <ion-card-header>
+        <ion-card-title>Source Code:</ion-card-title>
+      </ion-card-header>  
+      <ion-card-content>
+          Total commits:{{total_commits}}, Total issues:{{total_issues}}
+          <ion-label text-wrap>Check the source at <br> https://github.com/jmm9683/461LGroupProj/</ion-label>
+      </ion-card-content>
+  </ion-card>
 </ion-content>
