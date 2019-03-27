@@ -17,7 +17,7 @@ export class ResortsPage {
   endDate : string;
   item :string;
   public passOn: NavParams;
-  constructor(public navCtrl: NavController, public navParams: NavParams) {
+  constructor(public navCtrl: NavController, public navParams: NavParams, private http: HttpClient) {
     this.passOn=navParams;
     this.api = ServerRequest.Instance();
     this.data = navParams.get('data');
@@ -27,8 +27,7 @@ export class ResortsPage {
     //this.item = navParams.get('item');
   }
   load(){
-    this.HttpClient.get('https://randomuser.me/api/?results=10').subscribe((response) => {
-        console.log(response);
+    console.log(this.http.get('https://randomuser.me/api/?results=10'));
     });
   }
 
