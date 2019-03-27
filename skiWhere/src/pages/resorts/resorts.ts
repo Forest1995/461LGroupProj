@@ -10,13 +10,19 @@ import { ServerRequest } from '../../request/api'
 })
 export class ResortsPage {
   api: ServerRequest;
-  startDate : Date;
-  endDate : Date;
-
+  data:any;
+  startDate : string;
+  endDate : string;
+  item :string;
+  public passOn: NavParams;
   constructor(public navCtrl: NavController, public navParams: NavParams) {
+    this.passOn=navParams;
     this.api = ServerRequest.Instance();
-    this.startDate= navParams.get('start');
-    this.endDate= navParams.get('end');
+    this.data = navParams.get('data');
+    console.log(this.data);
+    //this.startDate= navParams.get('start');
+    //this.endDate= navParams.get('end');
+    //this.item = navParams.get('item');
   }
 
   // ionViewWillEnter(params){
@@ -31,8 +37,7 @@ export class ResortsPage {
   // }
 
   goToHotelsNearSilverton(){
-    console.log(this.startDate);
-    console.log(this.endDate);
-    this.navCtrl.push(HotelsNearSilvertonPage);
+    console.log(this.data);
+    this.navCtrl.push(HotelsNearSilvertonPage,{data:this.data});
   }
 }

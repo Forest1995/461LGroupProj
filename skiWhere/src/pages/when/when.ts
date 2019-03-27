@@ -9,19 +9,20 @@ import { ResortsPage } from '../resorts/resorts';
 })
 export class WhenPage {
 
-  public startDate:Date;
-  public endDate:Date;
+  public startDate:string;
+  public endDate:string;
 
   constructor( public navCtrl: NavController){
     // userParams is an object we have in our nav-parameters
 
   }
-  goToResorts(startDate,endDate){
+  goToResorts(){
     console.log(this.startDate);
     console.log(this.endDate);
-    this.navCtrl.push(ResortsPage,{
-      start : startDate,
-      end: endDate
-    });
+    this.navCtrl.push(ResortsPage,{data:{
+      start : this.startDate,
+      end: this.endDate,
+      item:'item'
+    }});
   }
 }
