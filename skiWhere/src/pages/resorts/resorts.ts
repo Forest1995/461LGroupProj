@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import { NavController ,NavParams, IonicPage} from 'ionic-angular';
 import { HotelsNearSilvertonPage } from '../hotels-near-silverton/hotels-near-silverton';
 import { ServerRequest } from '../../request/api'
+import { HttpClientModule } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 
 
 
