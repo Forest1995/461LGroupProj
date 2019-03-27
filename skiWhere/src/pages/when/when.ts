@@ -1,9 +1,7 @@
 import { Component } from '@angular/core';
 import { NavController } from 'ionic-angular';
 import { ResortsPage } from '../resorts/resorts';
-import { HotelsNearSilvertonPage } from '../hotels-near-silverton/hotels-near-silverton';
-import { FlightsPage } from '../flights/flights';
-import { ConfirmPage } from '../confirm/confirm';
+
 
 @Component({
   selector: 'page-when',
@@ -11,19 +9,19 @@ import { ConfirmPage } from '../confirm/confirm';
 })
 export class WhenPage {
 
-  constructor(public navCtrl: NavController) {
+  public startDate:Date;
+  public endDate:Date;
+
+  constructor( public navCtrl: NavController){
+    // userParams is an object we have in our nav-parameters
+
   }
-  goToResorts(params){
-    if (!params) params = {};
-    this.navCtrl.push(ResortsPage);
-  }goToHotelsNearSilverton(params){
-    if (!params) params = {};
-    this.navCtrl.push(HotelsNearSilvertonPage);
-  }goToFlights(params){
-    if (!params) params = {};
-    this.navCtrl.push(FlightsPage);
-  }goToConfirm(params){
-    if (!params) params = {};
-    this.navCtrl.push(ConfirmPage);
+  goToResorts(startDate,endDate){
+    console.log(this.startDate);
+    console.log(this.endDate);
+    this.navCtrl.push(ResortsPage,{
+      start : startDate,
+      end: endDate
+    });
   }
 }
