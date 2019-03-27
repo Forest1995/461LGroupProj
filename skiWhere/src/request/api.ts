@@ -15,22 +15,29 @@ export class ServerRequest{
         return this.apiGetDirectCall("https://api.github.com/repos/jmm9683/461LGroupProj/stats/contributors")
             .then((response : string)=>{
                 return JSON.parse(response)
-            });  
+            });
 
     }
     public getGitIssues(){
         return this.apiGetDirectCall("https://api.github.com/repos/jmm9683/461LGroupProj/issues")
             .then((response : string)=>{
                 return JSON.parse(response)
-            });  
-    }  
+            });
+    }
+    public postResort(start:string,end:string,state:string,price:number){
+      return this.apiDirectCall("https://somewebsite.com/Resort",{
+        StartDate:start,EndDate:end,State:state,Price:price
+      }).then((response : string)=>{
+        return JSON.parse(response)
+      });
+    }
     private presentLoading() {
         let loading = this.loadingCtrl.create({
           content: 'Please wait...'
         });
-      
+
         loading.present();
-        
+
         setTimeout(() => {
           loading.dismiss();
         }, 20000);
