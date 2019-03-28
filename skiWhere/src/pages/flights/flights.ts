@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
-import { NavController } from 'ionic-angular';
+import { NavController,NavParams } from 'ionic-angular';
 import { ConfirmPage } from '../confirm/confirm';
-import { HttpClientModule } from '@angular/common/http';
 import { HttpClient } from '@angular/common/http';
+import { ServerRequest } from '../../request/api';
 
 @Component({
   selector: 'page-flights',
@@ -10,13 +10,24 @@ import { HttpClient } from '@angular/common/http';
 })
 export class FlightsPage {
 
-  constructor(public navCtrl: NavController, private http: HttpClient) {
+  api: ServerRequest;
+  startDate : string;
+  endDate : string;
+  constructor(public navCtrl: NavController,public navParams: NavParams, private http: HttpClient) {
+    this.api = ServerRequest.Instance();
+    this.startDate = navParams.get('start');
+    this.endDate = navParams.get('end');
+    console.log(this.startDate);
+    console.log(this.endDate);
   }
+
   load(){
     console.log(this.http.get('https://randomuser.me/api/?results=10'));
   }
-  goToConfirm(params){
-    if (!params) params = {};
-    this.navCtrl.push(ConfirmPage);
+  goToConfirm(){
+    this.navCtrl.push(ConfirmPage,{
+      start : this.startDate,
+      end: this.endDate,
+    });
   }
 }

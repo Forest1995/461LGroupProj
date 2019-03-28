@@ -12,17 +12,13 @@ export class WhenPage {
   public startDate:string;
   public endDate:string;
 
-  constructor( public navCtrl: NavController){
-    // userParams is an object we have in our nav-parameters
-
-  }
+  constructor( public navCtrl: NavController){}
   goToResorts(){
     console.log(this.startDate);
     console.log(this.endDate);
-    this.navCtrl.push(ResortsPage,{data:{
+    this.navCtrl.push(ResortsPage,{
       start : this.startDate,
       end: this.endDate,
-      item:'item'
-    }});
+    });
   }
 }

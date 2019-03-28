@@ -1,10 +1,8 @@
 import { Component } from '@angular/core';
-import { NavController ,NavParams, IonicPage} from 'ionic-angular';
+import { NavController ,NavParams} from 'ionic-angular';
 import { HotelsNearSilvertonPage } from '../hotels-near-silverton/hotels-near-silverton';
 import { ServerRequest } from '../../request/api'
-import { HttpClientModule } from '@angular/common/http';
 import { HttpClient } from '@angular/common/http';
-
 
 
 @Component({
@@ -13,19 +11,14 @@ import { HttpClient } from '@angular/common/http';
 })
 export class ResortsPage {
   api: ServerRequest;
-  data:any;
   startDate : string;
   endDate : string;
-  item :string;
-  public passOn: NavParams;
   constructor(public navCtrl: NavController, public navParams: NavParams, private http: HttpClient) {
-    this.passOn=navParams;
     this.api = ServerRequest.Instance();
-    this.data = navParams.get('data');
-    console.log(this.data);
-    //this.startDate= navParams.get('start');
-    //this.endDate= navParams.get('end');
-    //this.item = navParams.get('item');
+    this.startDate = navParams.get('start');
+    this.endDate = navParams.get('end');
+    console.log(this.startDate);
+    console.log(this.endDate);
   }
   load(){
     console.log(this.http.get('https://randomuser.me/api/?results=10'));
@@ -44,7 +37,9 @@ export class ResortsPage {
 
 
   goToHotelsNearSilverton(){
-    console.log(this.data);
-    this.navCtrl.push(HotelsNearSilvertonPage,{data:this.data});
+    this.navCtrl.push(HotelsNearSilvertonPage,{
+      start : this.startDate,
+      end: this.endDate,
+    });
   }
 }
