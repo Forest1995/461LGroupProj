@@ -7,7 +7,6 @@ import { ServerRequest } from '../../request/api';
   templateUrl: 'confirm.html'
 })
 export class ConfirmPage {
-
   api: ServerRequest;
   startDate : string;
   endDate : string;
@@ -18,5 +17,4 @@ export class ConfirmPage {
     console.log(this.startDate);
     console.log(this.endDate);
   }
-
 }

@@ -13,6 +13,9 @@ export class ResortsPage {
   api: ServerRequest;
   startDate : string;
   endDate : string;
+  resorts:Array<Resort> = new Array<Resort>();
+
+
   constructor(public navCtrl: NavController, public navParams: NavParams, private http: HttpClient) {
     this.api = ServerRequest.Instance();
     this.startDate = navParams.get('start');
@@ -20,20 +23,27 @@ export class ResortsPage {
     console.log(this.startDate);
     console.log(this.endDate);
   }
+
   load(){
     console.log(this.http.get('https://randomuser.me/api/?results=10'));
   }
 
-  // ionViewWillEnter(params){
 
-  //   //console.log(this.startDate);
-  //   //console.log(this.endDate);
-  //   //get date from previous page
-  //   //use default state and price
-  //   //this.api.postResort("3/11/2019","3/22/2019","TX",1).then((res)=>{
-  //   //update ui
-  //   // })
-    // }
+  ionViewWillEnter(){
+
+    //get date from previous page
+    //use default state and price
+    this.api.postResort("3/11/2019","3/22/2019","TX",1).then((resData)=>{
+      for(let x of resData){
+        let resort = x ;
+        // here i dont know the structure of respond data
+
+
+        this.resorts.push(resort);
+      }
+    //update ui
+    })
+    }
 
 
   goToHotelsNearSilverton(){
@@ -42,4 +52,8 @@ export class ResortsPage {
       end: this.endDate,
     });
   }
+}
+
+class Resort {
+  constructor(public name:String, public img_src:String){}
 }
