@@ -35,36 +35,12 @@
 
   <!-- change this to a for loop -->
   <ion-list id="resorts-list1">
-    <ion-item color="none" on-click="goToHotelsNearSilverton()" id="resorts-list-item13">
+    <ion-item color="none" on-click="goToHotelsNearSilverton()" *ngFor="let resort of resorts">
       <ion-thumbnail item-left>
-        <img src="assets/img/unguided-page-1-e1446924078994.jpg" />
+        <img src="resort.img_src" />
       </ion-thumbnail>
       <h2>
-        Silverton Mountain
-      </h2>
-    </ion-item>
-    <ion-item color="none" on-click="goToHotelsNearSilverton()" id="resorts-list-item15">
-      <ion-thumbnail item-left>
-        <img src="assets/img/large.jpg" />
-      </ion-thumbnail>
-      <h2>
-        Powderhorn Mountain
-      </h2>
-    </ion-item>
-    <ion-item color="none" on-click="goToHotelsNearSilverton()" id="resorts-list-item14">
-      <ion-thumbnail item-left>
-        <img src="assets/img/Z" />
-      </ion-thumbnail>
-      <h2>
-        Winter Park Resort
-      </h2>
-    </ion-item>
-    <ion-item color="none" on-click="goToHotelsNearSilverton()" id="resorts-list-item16">
-      <ion-thumbnail item-left>
-        <img src="assets/img/ice_skating_beaver_creek_resort_2_73887.jpg" />
-      </ion-thumbnail>
-      <h2>
-        Beaver Creek Resort
+        {{resort.name}}
       </h2>
     </ion-item>
   </ion-list>
