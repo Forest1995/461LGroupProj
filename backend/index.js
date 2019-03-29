@@ -52,7 +52,7 @@ app.post('/resort',(req, res) => {
             let resort =returnObject[row["_id"]];
             resort["snowfall"]=row["pastSnow"]["sum3"];
             resort["snowdepth"]=row["snowcone"]["top_depth_cm"];
-            resort["weather"]=row["weatherWidget"]["weather_symbol"];
+            resort["weather"]=row["weatherWidget"][0]["weather_symbol"];
             resort["cost"]=null;
             returnObject[resort["id"]] = resort;
         }
