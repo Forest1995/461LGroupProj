@@ -16,7 +16,13 @@ export class WhenPage {
   goToResorts(){
     var curdate= new Date();
     var start=new Date(this.startDate);
-    if(curdate.getTime>start.getTime){
+
+    // console.log(curdate.getTime());
+    // console.log(start.getTime());
+    // console.log(this.startDate);
+    if(curdate.getTime()<start.getTime()){
+
+
       console.log(this.startDate);
       console.log(this.endDate);
       this.navCtrl.push(ResortsPage,{
