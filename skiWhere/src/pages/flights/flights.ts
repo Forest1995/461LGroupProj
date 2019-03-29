@@ -9,7 +9,8 @@ import { ServerRequest } from '../../request/api';
 })
 export class FlightsPage {
   flights : Array<any> = new Array<any>();
-
+  dest:string;
+  origin:string;
   api: ServerRequest;
   startDate : string;
   endDate : string;
@@ -20,9 +21,9 @@ export class FlightsPage {
     console.log(this.startDate);
     console.log(this.endDate);
   }
-  refreshFlights(startDate,endDate,orgin,dest){
+  refreshFlights(){
     //make this dynamic
-    this.api.postFlights(startDate,endDate,orgin,dest).then((resData)=>{
+    this.api.postFlights(this.startDate,this.endDate,this.origin,this.dest).then((resData)=>{
       this.flights = new Array<any>();
       for(let x of resData){
         //do processing?? i.e. compute travel time
@@ -37,6 +38,16 @@ export class FlightsPage {
         price:100,
         flightNo:"256"
       });
+      this.flights.push({
+        leave_time1:"4:30p",
+        arrive_time1:"6:30p",
+        leave_time2:"4:30p",
+        arrive_time2:"6:30p",
+        airline:"Alaska",
+        price:100,
+        flightNo:"256"
+      });
+
       //append flights to list
     });
 

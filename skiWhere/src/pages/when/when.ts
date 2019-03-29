@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { NavController } from 'ionic-angular';
 import { ResortsPage } from '../resorts/resorts';
+import { FlightsPage } from '../flights/flights';
 
 @Component({
   selector: 'page-when',
@@ -16,7 +17,7 @@ export class WhenPage {
   goToResorts(){
     console.log(this.startDate);
     console.log(this.endDate);
-    this.navCtrl.push(ResortsPage,{
+    this.navCtrl.push(FlightsPage,{
       start : this.startDate,
       end: this.endDate,
     });
