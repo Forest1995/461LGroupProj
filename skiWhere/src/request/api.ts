@@ -2,7 +2,7 @@ import { LoadingController} from 'ionic-angular';
 import { Http ,RequestOptions, Headers} from '@angular/http';
 
 export class ServerRequest{
-    private const server_url = "localhost:3000";
+    private server_url : string = "localhost:3000";
     private static _instance : ServerRequest;
     public cached : any;
     constructor(private http: Http,public loadingCtrl: LoadingController) {
