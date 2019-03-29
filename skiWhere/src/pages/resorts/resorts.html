@@ -5,9 +5,12 @@
     </ion-title>
   </ion-navbar>
 </ion-header>
-<ion-content padding id="page4">
-  <form id="resorts-form2">
+
+<ion-content padding id="resorts-page">
+
+  <form id="resorts-form1">
     <ion-searchbar placeholder="Search for resorts" name="" id="resorts-search1"></ion-searchbar>
+    <button ion-button block = "true" on-click="load()">Search</button>
     <ion-item id="resorts-select2">
       <ion-label>
         Sort By
@@ -28,37 +31,16 @@
       </ion-select>
     </ion-item>
   </form>
-  <ion-list id="resorts-list2">
-    <ion-item color="none" on-click="goToHotelsNearSilverton()" id="resorts-list-item13">
+
+
+  <!-- change this to a for loop -->
+  <ion-list id="resorts-list1">
+    <ion-item color="none" on-click="goToHotelsNearSilverton()" *ngFor="let resort of resorts">
       <ion-thumbnail item-left>
-        <img src="assets/img/unguided-page-1-e1446924078994.jpg" />
+        <img src="resort.img_src" />
       </ion-thumbnail>
       <h2>
-        Silverton Mountain
-      </h2>
-    </ion-item>
-    <ion-item color="none" on-click="goToHotelsNearSilverton()" id="resorts-list-item15">
-      <ion-thumbnail item-left>
-        <img src="assets/img/large.jpg" />
-      </ion-thumbnail>
-      <h2>
-        Powderhorn Mountain
-      </h2>
-    </ion-item>
-    <ion-item color="none" on-click="goToHotelsNearSilverton()" id="resorts-list-item14">
-      <ion-thumbnail item-left>
-        <img src="assets/img/Z" />
-      </ion-thumbnail>
-      <h2>
-        Winter Park Resort
-      </h2>
-    </ion-item>
-    <ion-item color="none" on-click="goToHotelsNearSilverton()" id="resorts-list-item16">
-      <ion-thumbnail item-left>
-        <img src="assets/img/ice_skating_beaver_creek_resort_2_73887.jpg" />
-      </ion-thumbnail>
-      <h2>
-        Beaver Creek Resort
+        {{resort.name}}
       </h2>
     </ion-item>
   </ion-list>

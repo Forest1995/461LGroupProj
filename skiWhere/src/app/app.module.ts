@@ -9,10 +9,12 @@ import { HotelsNearSilvertonPage } from '../pages/hotels-near-silverton/hotels-n
 import { FlightsPage } from '../pages/flights/flights';
 import { ConfirmPage } from '../pages/confirm/confirm';
 import { HttpModule } from '@angular/http';
-import { AboutPage } from '../pages/about/about'; 
+import { AboutPage } from '../pages/about/about';
 
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
+import { HttpClientModule } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -28,7 +30,9 @@ import { SplashScreen } from '@ionic-native/splash-screen';
   imports: [
     BrowserModule,
     IonicModule.forRoot(MyApp),
-    HttpModule
+    HttpModule,
+    HttpClientModule,
+
   ],
   bootstrap: [IonicApp],
   entryComponents: [
