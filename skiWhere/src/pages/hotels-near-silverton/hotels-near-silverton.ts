@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { NavController,NavParams } from 'ionic-angular';
 import { FlightsPage } from '../flights/flights';
-import { HttpClient } from '@angular/common/http';
 import { ServerRequest } from '../../request/api';
 
 @Component({
@@ -9,25 +8,32 @@ import { ServerRequest } from '../../request/api';
   templateUrl: 'hotels-near-silverton.html'
 })
 export class HotelsNearSilvertonPage {
-
+  hotels : Array<any> = new Array<any>();
   api: ServerRequest;
   startDate : string;
   endDate : string;
-  constructor(public navCtrl: NavController,public navParams: NavParams, private http: HttpClient) {
+  state: string;
+  constructor(public navCtrl: NavController,public navParams: NavParams) {
     this.api = ServerRequest.Instance();
     this.startDate = navParams.get('start');
     this.endDate = navParams.get('end');
+    this.state = navParams.get('state');
     console.log(this.startDate);
     console.log(this.endDate);
   }
+  refreshData(){
+    this.hotels=new Array<any>();
+    this.api.postHotels(this.startDate,this.endDate,this.state).then((resData)=>{
+      for(let x of resData){
 
-
-
-  load(){
-    console.log(this.http.get('https://randomuser.me/api/?results=10'));
+        this.hotels.push(x);
+      }
+    })
   }
+  ionViewWillEnter(){
+    this.refreshData();
 
-
+  }
   goToFlights(){
     this.navCtrl.push(FlightsPage,{
       start : this.startDate,
