@@ -7,41 +7,50 @@
 </ion-header>
 
 <ion-content padding id="resorts-page">
-
-  <form id="resorts-form1">
-    <ion-searchbar placeholder="Search for resorts" name="" id="resorts-search1"></ion-searchbar>
-    <button ion-button block = "true" on-click="load()">Search</button>
-    <ion-item id="resorts-select2">
-      <ion-label>
-        Sort By
-      </ion-label>
-      <ion-select name="">
-        <ion-option>
-          Price
-        </ion-option>
-        <ion-option>
-          State
-        </ion-option>
-        <ion-option>
-          Weather
-        </ion-option>
-        <ion-option>
-          Temperature
-        </ion-option>
-      </ion-select>
-    </ion-item>
-  </form>
-
-
   <!-- change this to a for loop -->
   <ion-list id="resorts-list1">
-    <ion-item color="none" on-click="goToHotelsNearSilverton()" *ngFor="let resort of resorts">
+    <ion-item>
+        <ion-label>Location</ion-label>
+        <ion-select [(ngModel)]="state" (ionChange)="refreshData()">
+          <ion-option value="CO">Colorado</ion-option>
+          <ion-option value="NH">New Hampshire</ion-option>
+          <ion-option value="CA">California</ion-option>            
+          <ion-option value="MI">Michigan</ion-option>
+          <ion-option value="WI">Wisconsin</ion-option>
+          <ion-option value="NY">New York</ion-option>
+          <ion-option value="PA">Pennsylvania</ion-option>
+          <ion-option value="ME">Maine</ion-option>
+          <ion-option value="WA">Washington</ion-option>
+          <ion-option value="NC">North Carolina</ion-option>
+          <ion-option value="MN">Minnesota</ion-option>
+        </ion-select>
+    </ion-item>
+    <ion-item>
+      <ion-label>Price</ion-label>
+      <ion-select [(ngModel)]="priceDirection" (ionChange)="refreshData()">
+        <ion-option value="0">Ascending</ion-option>
+        <ion-option value="1">Descending</ion-option>
+      </ion-select>
+    </ion-item>
+    <ion-item>
+        <ion-searchbar placeholder="Search for resorts" name="" id="resorts-search1" [(ngModel)]="searchTerm" (ionChange)="setFilteredItems()"></ion-searchbar>
+    </ion-item>
+    <ion-item color="none" on-click="goToHotelsNearSilverton(resort)" *ngFor="let resort of resorts">
       <ion-thumbnail item-left>
         <img src="resort.img_src" />
       </ion-thumbnail>
       <h2>
         {{resort.name}}
       </h2>
+      <h4 text-right *ngIf="resort.cost != null">
+        US ${{resort.cost}}
+      </h4>
+      <h4 text-right *ngIf="resort.cost == null">
+          No price data
+      </h4>
+      <p>
+        Rating:{{resort.rating}}, Snowfall:{{resort.snowfall}} in, {{resort.weather}}
+      </p>
     </ion-item>
   </ion-list>
 </ion-content>

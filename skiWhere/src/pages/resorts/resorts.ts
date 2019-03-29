@@ -2,7 +2,6 @@ import { Component } from '@angular/core';
 import { NavController ,NavParams} from 'ionic-angular';
 import { HotelsNearSilvertonPage } from '../hotels-near-silverton/hotels-near-silverton';
 import { ServerRequest } from '../../request/api'
-import { HttpClient } from '@angular/common/http';
 
 
 @Component({
@@ -10,50 +9,53 @@ import { HttpClient } from '@angular/common/http';
   templateUrl: 'resorts.html'
 })
 export class ResortsPage {
+  public searchTerm: string = "";
   api: ServerRequest;
   startDate : string;
   endDate : string;
-  resorts:Array<Resort> = new Array<Resort>();
+  base_resorts:Array<any> = new Array<any>();
+  resorts:Array<any> = new Array<any>();
+  priceDirection :String;
+  state :string;
 
-
-  constructor(public navCtrl: NavController, public navParams: NavParams, private http: HttpClient) {
+  constructor(public navCtrl: NavController, public navParams: NavParams) {
+    this.state= "CO";
+    this.priceDirection = "0";
     this.api = ServerRequest.Instance();
     this.startDate = navParams.get('start');
     this.endDate = navParams.get('end');
-    console.log(this.startDate);
-    console.log(this.endDate);
   }
-
-  load(){
-    console.log(this.http.get('https://randomuser.me/api/?results=10'));
+  setFilteredItems() {
+    this.resorts = this.base_resorts.filter(item => {
+      return item.name.toLowerCase().indexOf(this.searchTerm.toLowerCase()) > -1;
+    });
   }
-
-
-  ionViewWillEnter(){
-
-    //get date from previous page
-    //use default state and price
-    this.api.postResort("3/11/2019","3/22/2019","TX",1).then((resData)=>{
+  refreshData(){
+    this.base_resorts=new Array<any>();
+    this.resorts=new Array<any>();
+    this.api.postResort("3/11/2019","3/22/2019",this.state,parseInt(""+this.priceDirection)).then((resData)=>{
       for(let x of resData){
         let resort = x ;
-        // here i dont know the structure of respond data
-
-
+        this.base_resorts.push(resort);
         this.resorts.push(resort);
       }
-    //update ui
     })
-    }
+  }
+
+  ionViewWillEnter(){
+    this.refreshData();
+
+  }
+    //get date from previous page
+    //use default state and price
+    
 
 
-  goToHotelsNearSilverton(){
+  goToHotelsNearSilverton(resort){
     this.navCtrl.push(HotelsNearSilvertonPage,{
       start : this.startDate,
       end: this.endDate,
+      resort
     });
   }
-}
-
-class Resort {
-  constructor(public name:String, public img_src:String){}
 }

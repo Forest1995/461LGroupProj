@@ -2,6 +2,7 @@ import { LoadingController} from 'ionic-angular';
 import { Http ,RequestOptions, Headers} from '@angular/http';
 
 export class ServerRequest{
+    private const server_url = "localhost:3000";
     private static _instance : ServerRequest;
     public cached : any;
     constructor(private http: Http,public loadingCtrl: LoadingController) {
@@ -25,8 +26,8 @@ export class ServerRequest{
             });
     }
     public postResort(start:string,end:string,state:string,price:number){
-      return this.apiDirectCall("https://somewebsite.com/Resort",{
-        StartDate:start,EndDate:end,State:state,Price:price
+      return this.apiDirectCall("http://"+this.server_url+"/resort",{
+        StartDate:start,EndDate:end,state:state,price:price
       }).then((response : string)=>{
         return JSON.parse(response)
       });
