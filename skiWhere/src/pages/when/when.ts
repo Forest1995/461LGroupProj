@@ -14,11 +14,19 @@ export class WhenPage {
 
 
   goToResorts(){
-    console.log(this.startDate);
-    console.log(this.endDate);
-    this.navCtrl.push(ResortsPage,{
-      start : this.startDate,
-      end: this.endDate,
-    });
+    var curdate= new Date();
+    var start=new Date(this.startDate);
+    if(curdate.getTime>start.getTime){
+      console.log(this.startDate);
+      console.log(this.endDate);
+      this.navCtrl.push(ResortsPage,{
+        start : this.startDate,
+        end: this.endDate,
+      });
+      
+    }else{
+      alert("Please choose a day after today!");
+    }
+
   }
 }
