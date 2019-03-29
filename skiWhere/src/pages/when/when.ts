@@ -1,38 +1,27 @@
 import { Component } from '@angular/core';
-import { NavController } from 'ionic-angular';
+import { NavController,NavParams} from 'ionic-angular';
+import { ModalController } from 'ionic-angular';
 import { ResortsPage } from '../resorts/resorts';
+import { CalendarComponentOptions } from 'ion2-calendar';
 
 @Component({
   selector: 'page-when',
   templateUrl: 'when.html'
 })
 export class WhenPage {
-
-  public startDate:string;
-  public endDate:string;
-  constructor( public navCtrl: NavController){}
-
-
+  
+  dateRange: { from: string; to: string; };
+  type: 'string'; // 'string' | 'js-date' | 'moment' | 'time' | 'object'
+  optionsRange: CalendarComponentOptions = {
+  pickMode: 'range'
+  };
+  constructor(public navCtrl: NavController, public navParams: NavParams, public modalCtrl: ModalController) {
+  }
+  
   goToResorts(){
-    var curdate= new Date();
-    var start=new Date(this.startDate);
-
-    // console.log(curdate.getTime());
-    // console.log(start.getTime());
-    // console.log(this.startDate);
-    if(curdate.getTime()<start.getTime()){
-
-
-      console.log(this.startDate);
-      console.log(this.endDate);
       this.navCtrl.push(ResortsPage,{
-        start : this.startDate,
-        end: this.endDate,
-      });
-      
-    }else{
-      alert("Please choose a day after today!");
-    }
-
+        start : this.dateRange.from,
+        end: this.dateRange.to,
+      });     
   }
 }
