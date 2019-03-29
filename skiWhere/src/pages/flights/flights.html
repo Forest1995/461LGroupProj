@@ -1,3 +1,4 @@
+
 <ion-header>
   <ion-navbar>
     <ion-title>
@@ -13,7 +14,7 @@
     </ion-item>
     <ion-item>
       <ion-label fixed>To</ion-label>
-      <ion-input type="endDestination" [(ngModel)]="from"></ion-input>
+      <ion-input type="endDestination" [(ngModel)]="dest"></ion-input>
     </ion-item>
     <button ion-button block = "true" on-click="refreshFlights()">Search</button>
     <ion-item color="none" on-click="goToConfirm()" *ngFor="let flight of flights">
@@ -24,6 +25,24 @@
         <h2>
           {{flight.airline}}
         </h2>
+        <table align="center">
+          <tr>
+            <th>{{origin}}</th>
+            <th><ion-icon name="arrow-back"></ion-icon><ion-icon name="arrow-forward"></ion-icon></th>
+            <th>{{dest}}</th>
+          </tr>
+          <tr>
+              <td>{{flight.leave_time1}}</td>
+              <td align="center"><ion-icon name="arrow-forward"></ion-icon></td>
+              <td>{{flight.arrive_time1}}</td>
+          </tr>
+          <tr>
+              <td>{{flight.arrive_time2}}</td>
+              <td align="center"><ion-icon name="arrow-back"></ion-icon></td>
+              <td>{{flight.leave_time2}}</td>
+          </tr>
+        </table>
+
         <h4 text-right *ngIf="flight.price != null">
           US ${{flight.price}}
         </h4>

@@ -53,7 +53,7 @@ export class FlightsPage {
 
   }
   ionViewWillEnter(){
-    this.refreshFlights("M-D-YYYY","M-D-YYYY","AUS","EWR");
+    //this.refreshFlights("M-D-YYYY","M-D-YYYY","AUS","EWR");
   }
   goToConfirm(){
     this.navCtrl.push(ConfirmPage,{
