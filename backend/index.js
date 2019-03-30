@@ -10,6 +10,7 @@ app.use(express.json());
 
 const port = process.env.PORT || 3000
 const fskey = process.env.FlightKey;
+const hkey = process.env.HotelKey;
 
 app.get('/', (req, res) => res.send('Hello World!'))
 
@@ -70,8 +71,47 @@ function flightgetUrl(key){
     };
     return options;
 }
-function hotelUrl(){
-    return "";
+function hotelUrl(checkin, checkout, lat, long){
+    let base = "https://apidojo-booking-v1.p.rapidapi.com/properties/list";
+    console.log(base);
+    var options = {
+        uri: base,
+        qs: {
+            search_type : 'latlong',
+            offset : '0',
+            guest_qty : '1',
+            arrival_date : checkin,
+            departure_date : checkout,
+            latitude : lat,
+            longitude: long,
+            room_qty : '1',
+            price_filter_currencycode : 'USD',
+            order_by : 'popularity', 
+            languagecode : 'en-us',
+        },
+        headers: {
+            'X-RapidAPI-Key': hkey,
+        },
+        json: true // Automatically parses the JSON string in the response
+    };
+    return options;
+}
+
+function hotelgetLocationURL(location){
+    let base = "https://apidojo-booking-v1.p.rapidapi.com/locations/auto-complete";
+    console.log(base);
+    var options = {
+        uri: base,
+        qs: {
+            text : location,
+            languagecode : 'en-us',
+        },
+        headers: {
+            'X-RapidAPI-Key': hkey,
+        },
+        json: true // Automatically parses the JSON string in the response
+    };
+    return options;
 }
 app.post('/resort',(req, res) => {
     //Request must have state, price asc and decending
@@ -143,7 +183,42 @@ app.post('/resort',(req, res) => {
 
 })
 app.post('/hotel',(req, res) => {
-    res.send('[]')
+    let checkin= req.body.checkin;
+    let checkout= req.body.checkout;
+    let location= req.body.location;
+
+    if(checkin == null || checkout == null || location == null){
+        res.send(500,"args wrong or unsupported state");
+        return;
+    }
+    rp(hotelgetLocationURL(location))
+    .then((response)=> {
+        console.log(response);
+        var lat = 0.0;
+        var long = 0.0;
+        if(response[0] != null) {
+            lat = response[0]['latitude'];
+            long = response[0]['longitude'];
+        }
+        return rp(hotelUrl(checkin, checkout, lat, long))
+    })
+    .then((hotelDataResponse)=> {
+        console.log(hotelDataResponse);
+        data = []
+        returnthing = {data};
+
+        for(let hotel of response['result']){
+            let thishotel = {};
+            thishotel['hotel_name'] = hotel['hotel_name']
+            thishotel['hotel_price'] = hotel['price_breakdown']['all_inclusive_price']
+            thishotel['address'] = hotel['address']
+            thishotel['rating'] = ['review_score']
+            returnthing['data'].push(thishotel);
+        }
+
+        res.send(JSON.stringify(returnthing["data"]))
+    })
+    
 })
 var _include_headers = function(body, response, resolveWithFullResponse) {
     return {'headers': response.headers, 'data': body};
