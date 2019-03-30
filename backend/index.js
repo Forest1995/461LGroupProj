@@ -105,7 +105,7 @@ app.post('/resort',(req, res) => {
             returnObject[resort["id"]] = resort;
         }
         return rp({uri:"https://www.onthesnow.com/united-states/lift-tickets.html",transform:(body)=>cheerio.load(body)})
-        
+
     })
     .then(($)=>{
         //"scrape" webpage using jquery
@@ -140,7 +140,7 @@ app.post('/resort',(req, res) => {
         })
         res.send(JSON.stringify(resort_array));
     })
-    
+
 })
 app.post('/hotel',(req, res) => {
     res.send('Hello World!')
