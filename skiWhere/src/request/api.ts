@@ -41,7 +41,7 @@ export class ServerRequest{
       }
     public postFlights(start:string,end:string,origin:string,dest:string){
         return this.apiDirectCall("http://"+this.server_url+"/flight",{
-          startDate:start,endDate:end,origin:origin,dest:dest
+            date:start,retdate:end,orig:origin,dest:dest
         }).then((response : string)=>{
           return JSON.parse(response)
         });

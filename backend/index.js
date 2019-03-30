@@ -61,7 +61,7 @@ function flightgetUrl(key){
         uri: base + code,
         qs: {
             pageIndex : 0,
-            pageSize : 10,
+            pageSize : 100,
         },
         headers: {
             'X-RapidAPI-Key': fskey,
@@ -143,7 +143,7 @@ app.post('/resort',(req, res) => {
 
 })
 app.post('/hotel',(req, res) => {
-    res.send('Hello World!')
+    res.send('[]')
 })
 var _include_headers = function(body, response, resolveWithFullResponse) {
     return {'headers': response.headers, 'data': body};

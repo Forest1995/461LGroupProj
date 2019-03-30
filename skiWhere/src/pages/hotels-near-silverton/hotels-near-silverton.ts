@@ -13,11 +13,13 @@ export class HotelsNearSilvertonPage {
   startDate : string;
   endDate : string;
   state: string;
+  resort: any;
   constructor(public navCtrl: NavController,public navParams: NavParams) {
     this.api = ServerRequest.Instance();
     this.startDate = navParams.get('start');
     this.endDate = navParams.get('end');
     this.state = navParams.get('state');
+    this.resort = navParams.get('resort');
     console.log(this.startDate);
     console.log(this.endDate);
   }
@@ -28,16 +30,20 @@ export class HotelsNearSilvertonPage {
 
         this.hotels.push(x);
       }
+      this.hotels.push({name:"hi",price:10,address:"hiii",rating:3.4});
     })
   }
   ionViewWillEnter(){
     this.refreshData();
 
   }
-  goToFlights(){
+  goToFlights(hotel){
     this.navCtrl.push(FlightsPage,{
       start : this.startDate,
       end: this.endDate,
+      state:this.state,
+      hotel,
+      resort:this.resort
     });
   }
 }

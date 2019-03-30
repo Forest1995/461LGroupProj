@@ -17,8 +17,8 @@
       <ion-input type="endDestination" [(ngModel)]="dest"></ion-input>
     </ion-item>
     <button ion-button block = "true" on-click="refreshFlights()">Search</button>
-    <ion-item color="none" on-click="goToConfirm()" *ngFor="let flight of flights">
-      <ion-item color="none" on-click="goToConfirm()" id="flights-list-item33">
+    <ion-item color="none" on-click="goToConfirm(flight)" *ngFor="let flight of flights">
+      <ion-item color="none"id="flights-list-item33">
         <ion-thumbnail item-left>
           <ion-icon name="plane" item-left></ion-icon>
         </ion-thumbnail>

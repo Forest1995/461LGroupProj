@@ -25,6 +25,7 @@ export class WelcomePage {
   }
   goToWhen(params){
     if (!params) params = {};
+    //this.navCtrl.push(ConfirmPage);
     this.navCtrl.push(WhenPage);
   }goToResorts(params){
     if (!params) params = {};

@@ -8,94 +8,118 @@
 <ion-content padding id="page7">
   <ion-card id="confirm-card22">
     <ion-list>
-      <form id="confirm-form7">
-        <ion-item id="confirm-checkbox4">
-          <ion-label>
+      <ion-item id="confirm-checkbox4">
+        <ion-label>
             Dates
-          </ion-label>
-          <ion-checkbox></ion-checkbox>
-        </ion-item>
-      </form>
-      <div style="width:100%;height:220px;margin:0px 0px;line-height:250px;background-color:#e8ebef;text-align:center;">
-        <i class="icon ion-image" style="font-size:64px;color:#888;vertical-align:middle;"></i>
-      </div>
+        </ion-label>
+        <ion-checkbox [(ngModel)]="checkDate"></ion-checkbox>
+      </ion-item>
       <ion-item color="none" id="confirm-list-item47">
-        From
+        From: {{startDate}}
         <ion-note item-right></ion-note>
       </ion-item>
       <ion-item color="none" id="confirm-list-item48">
-        To
+        To: {{endDate}}
         <ion-note item-right></ion-note>
       </ion-item>
     </ion-list>
   </ion-card>
   <ion-card id="confirm-card21">
     <ion-list>
-      <form id="confirm-form10">
         <ion-item id="confirm-checkbox5">
           <ion-label>
             Resort
           </ion-label>
-          <ion-checkbox></ion-checkbox>
+          <ion-checkbox [(ngModel)]="checkResort"></ion-checkbox>
         </ion-item>
-      </form>
-      <ion-item color="none" id="confirm-list-item77">
-        <ion-thumbnail item-left>
-          <img src="assets/img/unguided-page-1-e1446924078994.jpg" />
-        </ion-thumbnail>
-        <h2>
-          Silverton Mountain
-        </h2>
-      </ion-item>
-      <div style="width:100%;height:220px;margin:0px 0px;line-height:250px;background-color:#e8ebef;text-align:center;">
-        <i class="icon ion-image" style="font-size:64px;color:#888;vertical-align:middle;"></i>
-      </div>
+        <ion-item color="none" >
+          <ion-thumbnail item-left>
+            <img src="resort.img_src" />
+          </ion-thumbnail>
+          <h2>
+            {{resort.name}}
+          </h2>
+          <h4 text-right *ngIf="resort.cost != null">
+            US ${{resort.cost}}
+          </h4>
+          <h4 text-right *ngIf="resort.cost == null">
+              No price data
+          </h4>
+          <p>
+            Rating:{{resort.rating}}, Snowfall:{{resort.snowfall}} in, {{resort.weather}}
+          </p>
+        </ion-item>
     </ion-list>
   </ion-card>
   <ion-card id="confirm-card23">
     <ion-list>
-      <form id="confirm-form11">
         <ion-item id="confirm-checkbox6">
           <ion-label>
             Hotel
           </ion-label>
-          <ion-checkbox></ion-checkbox>
+          <ion-checkbox [(ngModel)]="checkHotel"></ion-checkbox>
         </ion-item>
-      </form>
-      <ion-item color="none" id="confirm-list-item84">
-        <ion-thumbnail item-left>
-          <img src="assets/img/2Q" />
-        </ion-thumbnail>
-        <h2>
-          Grand Imperial Hotel
-        </h2>
-      </ion-item>
-      <div style="width:100%;height:220px;margin:0px 0px;line-height:250px;background-color:#e8ebef;text-align:center;">
-        <i class="icon ion-image" style="font-size:64px;color:#888;vertical-align:middle;"></i>
-      </div>
+        <ion-item  id="hotelsNearSilverton-list-item17">
+          <ion-thumbnail item-left>
+            <img src="assets/img/2Q" />
+          </ion-thumbnail>
+          <h2>
+            {{hotel.name}}
+          </h2>
+          <h4>
+            US ${{hotel.price}} per night, 
+          </h4>
+          <h4>
+              Address {{hotel.address}}
+          </h4>
+          <h4>
+              Rating {{hotel.rating}}
+          </h4>
+          <ion-icon item-right name="arrow-dropright"></ion-icon>
+        </ion-item>
     </ion-list>
   </ion-card>
   <ion-card id="confirm-card24">
     <ion-list>
-      <form id="confirm-form12">
-        <ion-item id="confirm-checkbox7">
-          <ion-label>
-            Flight
-          </ion-label>
-          <ion-checkbox></ion-checkbox>
-        </ion-item>
-      </form>
-      <ion-item color="none" id="confirm-list-item85">
+      <ion-item id="confirm-checkbox7">
+        <ion-label>
+          Flight
+        </ion-label>
+        <ion-checkbox [(ngModel)]="checkFlight"></ion-checkbox>
+      </ion-item>
+      <ion-item color="none"id="flights-list-item33">
         <ion-thumbnail item-left>
-          <img src="assets/img/AA.png" />
+          <ion-icon name="plane" item-left></ion-icon>
         </ion-thumbnail>
         <h2>
-          American
+          {{flight.airline}}
         </h2>
+        <table align="center">
+          <tr>
+            <th>{{origin}}</th>
+            <th><ion-icon name="arrow-back"></ion-icon><ion-icon name="arrow-forward"></ion-icon></th>
+            <th>{{dest}}</th>
+          </tr>
+          <tr>
+              <td>{{flight.leave_time1}}</td>
+              <td align="center"><ion-icon name="arrow-forward"></ion-icon></td>
+              <td>{{flight.arrive_time1}}</td>
+          </tr>
+          <tr>
+              <td>{{flight.arrive_time2}}</td>
+              <td align="center"><ion-icon name="arrow-back"></ion-icon></td>
+              <td>{{flight.leave_time2}}</td>
+          </tr>
+        </table>
+
+        <h4 text-right *ngIf="flight.price != null">
+          US ${{flight.price}}
+        </h4>
+        <h4 text-right *ngIf="flight.price == null">
+            No price data
+        </h4>
       </ion-item>
-      <div style="width:100%;height:220px;margin:0px 0px;line-height:250px;background-color:#e8ebef;text-align:center;">
-        <i class="icon ion-image" style="font-size:64px;color:#888;vertical-align:middle;"></i>
-      </div>
     </ion-list>
   </ion-card>
+  <button ion-button block = "true" on-click="saveData()">Save trip!</button>
 </ion-content>
