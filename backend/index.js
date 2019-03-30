@@ -9,6 +9,7 @@ app.use(cors())
 app.use(express.json());
 
 const port = process.env.PORT || 3000
+const fskey = process.env.FlightKey;
 
 app.get('/', (req, res) => res.send('Hello World!'))
 
@@ -27,6 +28,50 @@ const stateDB ={
 }
 function onTheSnowUrl(state,type){
     return "https://skiapp.onthesnow.com/app/widgets/resortlist?region=us&regionids="+state+"&language=en&pagetype="+type+"&direction=-1&order=stop&limit=100&offset=0&countrycode=USA&minvalue=-1&open=anystatus"
+}
+function flightUrl(orig,dest,date,retdate){
+    var options = {
+        method: "POST",
+        uri: "https://skyscanner-skyscanner-flight-search-v1.p.rapidapi.com/apiservices/pricing/v1.0",
+        headers: {
+            'X-RapidAPI-Key': fskey,
+            'Content-Type' : 'application/x-www-form-urlencoded'
+        },
+        form:{
+            'inboundDate' : retdate,
+            'outboundDate' : date,
+            'country' : 'US',
+            'currency' : 'USD',
+            'locale' : 'en-US',
+            'originPlace' : orig+'-sky',
+            'destinationPlace' : dest+'-sky',
+            'adults' : 1
+        },
+        json: true, // Automatically parses the JSON string in the response
+        transform: _include_headers
+    };
+    console.log(options['uri'])
+    return options;
+}
+function flightgetUrl(key){
+    let base = "https://skyscanner-skyscanner-flight-search-v1.p.rapidapi.com/apiservices/pricing/uk2/v1.0/";
+    let code = key.split("/").slice(-1)[0]
+    console.log(base + code);
+    var options = {
+        uri: base + code,
+        qs: {
+            pageIndex : 0,
+            pageSize : 10,
+        },
+        headers: {
+            'X-RapidAPI-Key': fskey,
+        },
+        json: true // Automatically parses the JSON string in the response
+    };
+    return options;
+}
+function hotelUrl(){
+    return "";
 }
 app.post('/resort',(req, res) => {
     //Request must have state, price asc and decending
@@ -100,8 +145,62 @@ app.post('/resort',(req, res) => {
 app.post('/hotel',(req, res) => {
     res.send('Hello World!')
 })
+var _include_headers = function(body, response, resolveWithFullResponse) {
+    return {'headers': response.headers, 'data': body};
+  };
 app.post('/flight',(req, res) => {
-    res.send('Hello World!')
-})
+        //Request must have state, price asc and decending
+        let orig= req.body.orig;
+        let dest= req.body.dest;
+        let date= req.body.date;
+        let retdate= req.body.retdate;
+
+        if(orig == null || dest == null || date == null){
+            res.send(500,"args wrong or unsupported state");
+            return;
+        }
+        rp(flightUrl(orig,dest,date,retdate))
+        .then((res)=>{
+            console.log(res);
+            var key = res.headers['location'];
+            return rp(flightgetUrl(key))
+        })
+        .then((response)=>{
+            data = []
+            returnthing = {data};
+            var count = 0;
+            var arr = [];
+            var k = 0;
+            for(let leg of response['Legs']){
+                var part = [leg['Id'],k];
+                k++;
+                arr.push(part);
+            }
+            var Legmap = new Map(arr);
+            k=0;
+            var arr2 = [];
+            for(let carrier of response['Carriers']){
+                var part = [carrier['Id'],k];
+                k++;
+                arr2.push(part);
+            }
+            var Carriermap = new Map(arr2)
+            for(let trip of response['Itineraries']){
+                let thistrip = {};
+                thistrip['price'] = trip['PricingOptions'][0]['Price']
+                var i = Legmap.get(trip['OutboundLegId']);
+                var j = Legmap.get(trip['InboundLegId']);
+                thistrip['leave_time1'] = response['Legs'][i]['Departure'];
+                thistrip['arrive_time1'] = response['Legs'][i]['Arrival'];
+                thistrip['leave_time2'] = response['Legs'][j]['Departure'];
+                thistrip['arrive_time2'] = response['Legs'][j]['Arrival'];
+
+                thistrip['airline'] = response['Carriers'][Carriermap.get(response['Legs'][i]['Carriers'][0])]['Name'];
+                count++;
+                returnthing['data'].push(thistrip);
+            }
+            res.send(JSON.stringify(returnthing["data"]));
+        })
+    })
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))
