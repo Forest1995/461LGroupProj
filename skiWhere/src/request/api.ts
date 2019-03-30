@@ -2,7 +2,7 @@ import { LoadingController} from 'ionic-angular';
 import { Http ,RequestOptions, Headers} from '@angular/http';
 
 export class ServerRequest{
-    private const server_url = "localhost:3000";
+    private server_url : string = "localhost:3000";
     private static _instance : ServerRequest;
     public cached : any;
     constructor(private http: Http,public loadingCtrl: LoadingController) {
@@ -32,6 +32,13 @@ export class ServerRequest{
         return JSON.parse(response)
       });
     }
+    public postFlights(start:string,end:string,origin:string,dest:string){
+        return this.apiDirectCall("http://"+this.server_url+"/flight",{
+          startDate:start,endDate:end,origin:origin,dest:dest
+        }).then((response : string)=>{
+          return JSON.parse(response)
+        });
+      }
     private presentLoading() {
         let loading = this.loadingCtrl.create({
           content: 'Please wait...'
