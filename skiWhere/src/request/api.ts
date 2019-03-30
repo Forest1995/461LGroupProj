@@ -32,13 +32,13 @@ export class ServerRequest{
         return JSON.parse(response)
       });
     }
-    public postHotels(start:string,end:string,dest:string,){
+    public postHotels(start:string,end:string,location:string){
         return this.apiDirectCall("http://"+this.server_url+"/hotel",{
-          checkin_date:start,checkout_date:end,dest:dest
+            checkin:start,checkout:end,location:location
         }).then((response : string)=>{
-          return JSON.parse(response)
+            return JSON.parse(response)
         });
-      }
+        }
     public postFlights(start:string,end:string,origin:string,dest:string){
         return this.apiDirectCall("http://"+this.server_url+"/flight",{
             date:start,retdate:end,orig:origin,dest:dest

@@ -202,17 +202,20 @@ app.post('/hotel',(req, res) => {
         }
         return rp(hotelUrl(checkin, checkout, lat, long))
     })
-    .then((hotelDataResponse)=> {
-        console.log(hotelDataResponse);
+    .then((response)=> {
+        //console.log(response);
         data = []
         returnthing = {data};
 
         for(let hotel of response['result']){
             let thishotel = {};
             thishotel['hotel_name'] = hotel['hotel_name']
-            thishotel['hotel_price'] = hotel['price_breakdown']['all_inclusive_price']
+            if(hotel['price_breakdown'] !== undefined)
+                thishotel['hotel_price'] = hotel['price_breakdown']['all_inclusive_price']
+            else
+                thishotel['hotel_price'] = null;
             thishotel['address'] = hotel['address']
-            thishotel['rating'] = ['review_score']
+            thishotel['rating'] = hotel['review_score']
             returnthing['data'].push(thishotel);
         }
 
