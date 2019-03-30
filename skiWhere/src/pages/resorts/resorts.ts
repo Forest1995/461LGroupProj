@@ -55,6 +55,7 @@ export class ResortsPage {
     this.navCtrl.push(HotelsNearSilvertonPage,{
       start : this.startDate,
       end: this.endDate,
+      state:this.state,
       resort
     });
   }

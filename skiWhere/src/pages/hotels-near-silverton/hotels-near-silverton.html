@@ -30,37 +30,23 @@
     </ion-item>
   </form>
   <ion-list id="hotelsNearSilverton-list3">
-    <ion-item color="balanced" on-click="goToFlights()" id="hotelsNearSilverton-list-item17">
+    <ion-item  on-click="goToFlights()" id="hotelsNearSilverton-list-item17" on-click="goToFlights(hotel)" *ngFor="let hotel of hotels">
       <ion-thumbnail item-left>
         <img src="assets/img/2Q" />
       </ion-thumbnail>
       <h2>
-        Grand Imperial Hotel
+        {{hotel.name}}
       </h2>
-    </ion-item>
-    <ion-item color="positive" on-click="goToFlights()" id="hotelsNearSilverton-list-item18">
-      <ion-thumbnail item-left>
-        <img src="assets/img/AF1QipNqw7NhgtVqSbIB0AfYMNt8pI6JcMEUZwjBuuerw592-h404-n-k-no-v1" />
-      </ion-thumbnail>
-      <h2>
-        Blair Street Hostel
-      </h2>
-    </ion-item>
-    <ion-item color="positive" on-click="goToFlights()" id="hotelsNearSilverton-list-item21">
-      <ion-thumbnail item-left>
-        <img src="assets/img/AF1QipO0NSl3FC2fQdAkNW8lobeDau40JiwqX-dCgDWgw592-h404-n-k-no-v1" />
-      </ion-thumbnail>
-      <h2>
-        Comfort Inn & Suites Durango
-      </h2>
-    </ion-item>
-    <ion-item color="assertive" on-click="goToFlights()" id="hotelsNearSilverton-list-item22">
-      <ion-thumbnail item-left>
-        <img src="assets/img/AF1QipNNyS3MKAjLuON7BXlRrAn03esCeSWn1VhSRRVHw592-h404-n-k-no-v1" />
-      </ion-thumbnail>
-      <h2>
-        Hilton Santa Fe Buffalo Thunder
-      </h2>
+      <h4>
+        US ${{hotel.price}} per night, 
+      </h4>
+      <h4>
+          Address {{hotel.address}}
+      </h4>
+      <h4>
+          Rating {{hotel.rating}}
+      </h4>
+      <ion-icon item-right name="arrow-dropright"></ion-icon>
     </ion-item>
   </ion-list>
 </ion-content>
