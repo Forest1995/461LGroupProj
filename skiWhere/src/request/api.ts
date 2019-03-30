@@ -32,13 +32,6 @@ export class ServerRequest{
         return JSON.parse(response)
       });
     }
-    public postHotels(start:string,end:string,dest:string,){
-        return this.apiDirectCall("http://"+this.server_url+"/hotel",{
-          checkin_date:start,checkout_date:end,dest:dest
-        }).then((response : string)=>{
-          return JSON.parse(response)
-        });
-      }
     public postFlights(start:string,end:string,origin:string,dest:string){
         return this.apiDirectCall("http://"+this.server_url+"/flight",{
           startDate:start,endDate:end,origin:origin,dest:dest
@@ -46,6 +39,13 @@ export class ServerRequest{
           return JSON.parse(response)
         });
       }
+    public postHotels(start:string,end:string,location:string){
+    return this.apiDirectCall("http://"+this.server_url+"/hotel",{
+        arrivalDate:start,departureDate:end,city:location
+    }).then((response : string)=>{
+        return JSON.parse(response)
+    });
+    }
     private presentLoading() {
         let loading = this.loadingCtrl.create({
           content: 'Please wait...'
