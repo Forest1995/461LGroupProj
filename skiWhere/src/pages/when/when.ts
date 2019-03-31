@@ -10,7 +10,7 @@ import { CalendarComponentOptions } from 'ion2-calendar';
 })
 export class WhenPage {
   
-  dateRange: { from: string; to: string; };
+  dateRange: { from: any; to: any; };
   type: 'string'; // 'string' | 'js-date' | 'moment' | 'time' | 'object'
   optionsRange: CalendarComponentOptions = {
   pickMode: 'range'
@@ -20,8 +20,8 @@ export class WhenPage {
   
   goToResorts(){
       this.navCtrl.push(ResortsPage,{
-        start : this.dateRange.from,
-        end: this.dateRange.to,
+        start : this.dateRange.from.format("YYYY-MM-DD"),
+        end: this.dateRange.to.format("YYYY-MM-DD"),
       });     
   }
 }
