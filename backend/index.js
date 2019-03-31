@@ -2,6 +2,21 @@ const express = require('express')
 const rp = require('request-promise');
 var cors = require('cors')
 var cheerio = require('cheerio');
+var mongo = require('mongoose');
+mongo.Promise = require('bluebird');
+var tripSchema, Trip;
+mongo.connect(process.env.MONGODB_URI || "mongodb://localhost:27017/datastore",{
+    user:process.env.mdb_user,
+    pass:process.env.mdb_password,
+    useMongoClient:true,
+}).then(()=>{
+    tripSchema = new mongo.Schema({}, { strict: false });
+    Trip = mongo.model('Thing', tripSchema);   
+}).catch(err=>{
+    console.error(err);
+    process.exit(-1);
+});
+
 
 const app = express()
 app.use(cors())
@@ -280,5 +295,17 @@ app.post('/flight',(req, res) => {
             res.send(JSON.stringify(returnthing["data"]));
         })
     })
+ 
+app.post('/trip',(req, res) => {
+    var thing = new Trip(req.body);
+    thing.save(function(err,trip) {
+        res.send("https://skiwheredb.herokuapp.com/getTrip?id="+trip._id);
+    });
 
+});
+app.get('/getTrip',(req, res) => {
+    Trip.findOne({_id:req.query.id}).then((doc)=>{
+        res.send(JSON.stringify(doc)); 
+    });
+});
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))

@@ -2,7 +2,7 @@ import { LoadingController} from 'ionic-angular';
 import { Http ,RequestOptions, Headers} from '@angular/http';
 
 export class ServerRequest{
-    private server_url : string = "localhost:3000";
+    private server_url : string = "https://skiwheredb.herokuapp.com";
     private static _instance : ServerRequest;
     public cached : any;
     constructor(private http: Http,public loadingCtrl: LoadingController) {
@@ -26,24 +26,36 @@ export class ServerRequest{
             });
     }
     public postResort(start:string,end:string,state:string,price:number){
-      return this.apiDirectCall("http://"+this.server_url+"/resort",{
+      return this.apiDirectCall(this.server_url+"/resort",{
         StartDate:start,EndDate:end,state:state,price:price
       }).then((response : string)=>{
         return JSON.parse(response)
       });
     }
     public postHotels(start:string,end:string,location:string){
-        return this.apiDirectCall("http://"+this.server_url+"/hotel",{
+        return this.apiDirectCall(this.server_url+"/hotel",{
             checkin:start,checkout:end,location:location
         }).then((response : string)=>{
             return JSON.parse(response)
         });
-        }
+    }
     public postFlights(start:string,end:string,origin:string,dest:string){
-        return this.apiDirectCall("http://"+this.server_url+"/flight",{
+        return this.apiDirectCall(this.server_url+"/flight",{
             date:start,retdate:end,orig:origin,dest:dest
+        }).then(()=>{
+            //nathans broken code
+            return this.apiDirectCall(this.server_url+"/flight",{
+            date:start,retdate:end,orig:origin,dest:dest
+            })
         }).then((response : string)=>{
-          return JSON.parse(response)
+              return JSON.parse(response)
+        });
+        
+    }
+    public postTrip(data){
+        return this.apiDirectCall(this.server_url+"/trip",data).then((response : string)=>{
+            alert(response);
+            return response;
         });
       }
     private presentLoading() {
