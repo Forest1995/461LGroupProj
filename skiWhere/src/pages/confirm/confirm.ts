@@ -31,7 +31,7 @@ export class ConfirmPage {
   }
   saveData(){
     if(this.checkDate && this.checkResort && this.checkHotel && this.checkFlight){
-      alert(JSON.stringify({
+      this.api.postTrip(JSON.stringify({
         start : this.startDate,
         end: this.endDate,
         state:this.state,
