@@ -243,6 +243,10 @@ var _include_headers = function(body, response, resolveWithFullResponse) {
   };
 app.post('/flight',(req, res) => {
         //Request must have state, price asc and decending
+        if(fskey == null){
+            console.log('Local flight api key not set');
+        }
+
         let orig= req.body.orig;
         let dest= req.body.dest;
         let date= req.body.date;
