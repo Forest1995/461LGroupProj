@@ -10,6 +10,7 @@ import { FlightsPage } from '../pages/flights/flights';
 import { ConfirmPage } from '../pages/confirm/confirm';
 import { HttpModule } from '@angular/http';
 import { AboutPage } from '../pages/about/about';
+import { CalendarModule } from "ion2-calendar";
 
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
@@ -32,6 +33,7 @@ import { HttpClient } from '@angular/common/http';
     IonicModule.forRoot(MyApp),
     HttpModule,
     HttpClientModule,
+    CalendarModule
 
   ],
   bootstrap: [IonicApp],

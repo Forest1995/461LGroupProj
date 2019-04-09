@@ -5,8 +5,10 @@
     </ion-title>
   </ion-navbar>
 </ion-header>
+
 <ion-content padding id="page3">
-  <form id="when-form5">
+
+  <!-- <form id="when-form5">
     <ion-item id="when-input3">
       <ion-label stacked>
         From
@@ -19,10 +21,17 @@
       </ion-label>
       <ion-input type="date" [(ngModel)]="endDate" name="END"></ion-input>
     </ion-item>
-  </form>
-  <img src="assets/img/32uGrkhT0yIXV1nm7fki_Date-Picker-For-Ionic-22.jpg" style="display:block;width:100%;height:auto;margin-left:auto;margin-right:auto;" />
+  </form> -->
+
+  <ion-calendar [(ngModel)]="dateRange"
+              [options]="optionsRange"
+              [type]="type"
+              [format]="'YYYY-MM-DD'">
+  </ion-calendar>
+
   <button id="when-button2" ion-button color="positive" block icon-right on-click="goToResorts()">
-    Next
-    <ion-icon name="arrow-forward"></ion-icon>
+      Next
+      <ion-icon name="arrow-forward"></ion-icon>
   </button>
+
 </ion-content>

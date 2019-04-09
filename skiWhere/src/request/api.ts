@@ -40,10 +40,15 @@ export class ServerRequest{
         });
     }
     public postFlights(start:string,end:string,origin:string,dest:string){
+        let l = null;
         return this.apiDirectCall(this.server_url+"/flight",{
             date:start,retdate:end,orig:origin,dest:dest
         }).then(()=>{
+            l = this.presentLoading()
+            return new Promise( resolve => setTimeout(resolve, 1000) );
+        }).then(()=>{
             //nathans broken code
+            l.dismiss();
             return this.apiDirectCall(this.server_url+"/flight",{
             date:start,retdate:end,orig:origin,dest:dest
             })
