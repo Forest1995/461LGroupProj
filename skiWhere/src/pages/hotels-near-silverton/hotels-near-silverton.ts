@@ -40,7 +40,7 @@ export class HotelsNearSilvertonPage {
     this.hotels=new Array<any>();
     this.api.postHotels(this.startDate,this.endDate,this.stateDB[this.state]).then((resData)=>{
       for(let x of resData){
-
+        
         this.hotels.push(x);
       }
       this.hotels.push({name:"hi",price:10,address:"hiii",rating:3.4});

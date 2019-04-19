@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { NavController ,NavParams} from 'ionic-angular';
 import { HotelsNearSilvertonPage } from '../hotels-near-silverton/hotels-near-silverton';
 import { ServerRequest } from '../../request/api'
+import { resolveDefinition } from '@angular/core/src/view/util';
 
 
 @Component({
@@ -51,8 +52,8 @@ export class ResortsPage {
     //use default state and price
 
 
-
-  goToHotelsNearSilverton(resort){
+    
+    goToHotelsNearSilverton(resort){
     this.navCtrl.push(HotelsNearSilvertonPage,{
       start : this.startDate,
       end: this.endDate,

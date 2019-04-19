@@ -32,7 +32,7 @@
   <ion-list id="hotelsNearSilverton-list3">
     <ion-item  id="hotelsNearSilverton-list-item17" on-click="goToFlights(hotel)" *ngFor="let hotel of hotels">
       <ion-thumbnail item-left>
-        <img src="assets/img/2Q" />
+        <img [src]="hotel.imageUrl" />
       </ion-thumbnail>
       <h2>
         {{hotel.hotel_name}}
