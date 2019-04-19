@@ -18,6 +18,7 @@ export class ResortsPage {
   priceDirection :String;
   state :string;
 
+
   constructor(public navCtrl: NavController, public navParams: NavParams) {
     this.state= "CO";
     this.priceDirection = "0";
@@ -48,7 +49,7 @@ export class ResortsPage {
   }
     //get date from previous page
     //use default state and price
-    
+
 
 
   goToHotelsNearSilverton(resort){
