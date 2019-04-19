@@ -5,6 +5,7 @@ var cheerio = require('cheerio');
 var mongo = require('mongoose');
 mongo.Promise = require('bluebird');
 var tripSchema, Trip;
+
 mongo.connect(process.env.MONGODB_URI || "mongodb://localhost:27017/datastore",{
     user:process.env.mdb_user,
     pass:process.env.mdb_password,
@@ -271,6 +272,10 @@ app.post('/hotel',(req, res) => {
 var _include_headers = function(body, response, resolveWithFullResponse) {
     return {'headers': response.headers, 'data': body};
   };
+
+function sleep(millis) {
+    return new Promise(resolve => setTimeout(resolve, millis));
+}
 app.post('/flight',(req, res) => {
         //Request must have state, price asc and decending
         if(fskey == null){
@@ -288,8 +293,22 @@ app.post('/flight',(req, res) => {
         }
         rp(flightUrl(orig,dest,date,retdate))
         .then((res)=>{
+            return new Promise(function(resolve, reject) {
+                setTimeout(function(){
+                    resolve(res);
+                },100)
+            });
+        })
+        .then((res)=>{
             console.log(res);
             var key = res.headers['location'];
+            var datatest = null;
+            // while((datatest==null)||(datatest['Itineraries'].length()<10)){
+            //     rp(flightgetUrl(key))
+            //     .then((response)=>{
+            //         datatest=response;
+            //     })
+            // }
             return rp(flightgetUrl(key))
         })
         .then((response)=>{
