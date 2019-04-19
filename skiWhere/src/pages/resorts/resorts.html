@@ -37,7 +37,7 @@
     </ion-item>
     <ion-item color="none" on-click="goToHotelsNearSilverton(resort)" *ngFor="let resort of resorts">
       <ion-thumbnail item-left>
-        <img src="resort.img_src" />
+        <img [src]="resort.imageUrl" />
       </ion-thumbnail>
       <h2>
         {{resort.name}}
