@@ -28,6 +28,7 @@ app.use(express.json());
 const port = process.env.PORT || 3000
 const fskey = process.env.FlightKey;
 const hkey = process.env.HotelKey;
+const imageKey = process.env.ImageKey;
 
 app.get('/', (req, res) => res.send('Hello World!'))
 
@@ -46,6 +47,20 @@ const stateDB ={
 }
 function onTheSnowUrl(state,type){
     return "https://skiapp.onthesnow.com/app/widgets/resortlist?region=us&regionids="+state+"&language=en&pagetype="+type+"&direction=-1&order=stop&limit=100&offset=0&countrycode=USA&minvalue=-1&open=anystatus"
+}
+function onImageUrl(name, id) {
+    const options = {
+        uri: `https://api.cognitive.microsoft.com/bing/v7.0/images/search?q=${name}&count=1&offset=0&mkt=en-us&safeSearch=Moderate`,
+        headers: {
+            'Ocp-Apim-Subscription-Key': imageKey
+        },
+        json: true 
+    }
+    return rp(options).then((data) => {
+        return data
+    }).catch((err) => {
+        console.log("err in" + name)
+    })
 }
 function flightUrl(orig,dest,date,retdate){
     var options = {
@@ -82,7 +97,7 @@ function flightgetUrl(key){
             pageSize : 100,
         },
         headers: {
-            'X-RapidAPI-Key': fskey,
+            'X-RapidAPI-Key': fskey
         },
         json: true // Automatically parses the JSON string in the response
     };
@@ -107,7 +122,7 @@ function hotelUrl(checkin, checkout, lat, long){
             languagecode : 'en-us',
         },
         headers: {
-            'X-RapidAPI-Key': hkey,
+            'X-RapidAPI-Key': hkey
         },
         json: true // Automatically parses the JSON string in the response
     };
@@ -139,9 +154,11 @@ app.post('/resort',(req, res) => {
         return;
     }
     let returnObject={};
+    let postoID = []
     //skireport
     rp({uri:onTheSnowUrl(stateCode,"profile"),json:true})
     .then((data)=>{
+        let imgReqs = []
         for(let row of data["rows"]){
             let resort ={};
             resort["id"]=row["_id"];
@@ -149,9 +166,21 @@ app.post('/resort',(req, res) => {
             resort["rating"]=row["reviewTotals"]["overall"];
             resort["isOpen"]=row["snowcone"]["open_flag"];
             returnObject[resort["id"]] = resort;
+            imgReqs.push(onImageUrl(resort["name"], resort["id"]))
+            postoID.push(resort["id"])
+        }
+        return Promise.all(imgReqs)
+    })
+    .then((data) => {
+        for (let i = 0; i < data.length; i++) {
+            if (!data[i]) {
+                returnObject[postoID[i]].imageUrl = ""
+            }  else {
+                returnObject[postoID[i]].imageUrl = data[i].value[0].contentUrl
+            }
         }
         return rp({uri:onTheSnowUrl(stateCode,"skireport"),json:true})
-    })
+    }) 
     .then((data)=>{
         for(let row of data["rows"]){
             let resort =returnObject[row["_id"]];
@@ -233,6 +262,7 @@ app.post('/hotel',(req, res) => {
                 thishotel['hotel_price'] = null;
             thishotel['address'] = hotel['address']
             thishotel['rating'] = hotel['review_score']
+            thishotel['imageUrl'] = hotel['main_photo_url']
             returnthing['data'].push(thishotel);
         }
 
@@ -297,6 +327,7 @@ app.post('/flight',(req, res) => {
             k=0;
             var arr2 = [];
             for(let carrier of response['Carriers']){
+                console.log(carrier)
                 var part = [carrier['Id'],k];
                 k++;
                 arr2.push(part);
@@ -313,6 +344,7 @@ app.post('/flight',(req, res) => {
                 thistrip['arrive_time2'] = response['Legs'][j]['Arrival'];
 
                 thistrip['airline'] = response['Carriers'][Carriermap.get(response['Legs'][i]['Carriers'][0])]['Name'];
+                thistrip['imageUrl'] = response['Carriers'][Carriermap.get(response['Legs'][i]['Carriers'][0])]['ImageUrl'];
                 count++;
                 returnthing['data'].push(thistrip);
             }
