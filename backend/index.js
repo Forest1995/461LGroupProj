@@ -18,7 +18,6 @@ mongo.connect(process.env.MONGODB_URI || "mongodb://localhost:27017/datastore",{
     process.exit(-1);
 });
 
-
 const app = express()
 app.use(cors())
 
@@ -96,7 +95,7 @@ function flightgetUrl(key){
             pageSize : 100,
         },
         headers: {
-            'X-RapidAPI-Key': fskey,
+            'X-RapidAPI-Key': fskey
         },
         json: true // Automatically parses the JSON string in the response
     };
@@ -121,7 +120,7 @@ function hotelUrl(checkin, checkout, lat, long){
             languagecode : 'en-us',
         },
         headers: {
-            'X-RapidAPI-Key': hkey,
+            'X-RapidAPI-Key': hkey
         },
         json: true // Automatically parses the JSON string in the response
     };
@@ -293,13 +292,6 @@ app.post('/flight',(req, res) => {
         }
         rp(flightUrl(orig,dest,date,retdate))
         .then((res)=>{
-            return new Promise(function(resolve, reject) {
-                setTimeout(function(){
-                    resolve(res);
-                },100)
-            });
-        })
-        .then((res)=>{
             console.log(res);
             var key = res.headers['location'];
             var datatest = null;
@@ -326,6 +318,7 @@ app.post('/flight',(req, res) => {
             k=0;
             var arr2 = [];
             for(let carrier of response['Carriers']){
+                console.log(carrier)
                 var part = [carrier['Id'],k];
                 k++;
                 arr2.push(part);
@@ -342,6 +335,7 @@ app.post('/flight',(req, res) => {
                 thistrip['arrive_time2'] = response['Legs'][j]['Arrival'];
 
                 thistrip['airline'] = response['Carriers'][Carriermap.get(response['Legs'][i]['Carriers'][0])]['Name'];
+                thistrip['imageUrl'] = response['Carriers'][Carriermap.get(response['Legs'][i]['Carriers'][0])]['ImageUrl'];
                 count++;
                 returnthing['data'].push(thistrip);
             }

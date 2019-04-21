@@ -34,6 +34,7 @@ export class FlightsPage {
       for(let x of resData){
         //do processing?? i.e. compute travel time
         this.flights.push(x);
+        console.log(x)
       }
       /*this.flights.push({
         leave_time1:"4:30p",

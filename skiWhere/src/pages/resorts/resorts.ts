@@ -46,13 +46,10 @@ export class ResortsPage {
 
   ionViewWillEnter(){
     this.refreshData();
-
   }
     //get date from previous page
     //use default state and price
 
-
-    
     goToHotelsNearSilverton(resort){
     this.navCtrl.push(HotelsNearSilvertonPage,{
       start : this.startDate,
