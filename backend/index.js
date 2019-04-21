@@ -19,6 +19,7 @@ mongo.connect(process.env.MONGODB_URI || "mongodb://localhost:27017/datastore",{
 });
 
 
+
 const app = express()
 app.use(cors())
 
@@ -266,7 +267,7 @@ app.post('/flight',(req, res) => {
             return new Promise(function(resolve, reject) {
                 setTimeout(function(){
                     resolve(res);
-                },100)
+                },200)
             });
         })
         .then((res)=>{
