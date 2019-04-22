@@ -6,17 +6,17 @@ var mongo = require('mongoose');
 mongo.Promise = require('bluebird');
 var tripSchema, Trip;
 
-mongo.connect(process.env.MONGODB_URI || "mongodb://localhost:27017/datastore",{
-    user:process.env.mdb_user,
-    pass:process.env.mdb_password,
-    useMongoClient:true,
-}).then(()=>{
-    tripSchema = new mongo.Schema({}, { strict: false });
-    Trip = mongo.model('Thing', tripSchema);   
-}).catch(err=>{
-    console.error(err);
-    process.exit(-1);
-});
+// mongo.connect(process.env.MONGODB_URI || "mongodb://localhost:27017/datastore",{
+//     user:process.env.mdb_user,
+//     pass:process.env.mdb_password,
+//     useMongoClient:true,
+// }).then(()=>{
+//     tripSchema = new mongo.Schema({}, { strict: false });
+//     Trip = mongo.model('Thing', tripSchema);
+// }).catch(err=>{
+//     console.error(err);
+//     process.exit(-1);
+// });
 
 
 
@@ -54,7 +54,7 @@ function onImageUrl(name, id) {
         headers: {
             'Ocp-Apim-Subscription-Key': imageKey
         },
-        json: true 
+        json: true
     }
     return rp(options).then((data) => {
         return data
@@ -118,7 +118,7 @@ function hotelUrl(checkin, checkout, lat, long){
             longitude: long,
             room_qty : '1',
             price_filter_currencycode : 'USD',
-            order_by : 'popularity', 
+            order_by : 'popularity',
             languagecode : 'en-us',
         },
         headers: {
@@ -165,7 +165,7 @@ app.post('/resort',(req, res) => {
             resort["name"]=row["resort_name"];
             resort["rating"]=row["reviewTotals"]["overall"];
             resort["isOpen"]=row["snowcone"]["open_flag"];
-            returnObject[resort["id"]] = resort;
+            resort["slopesOpen"]=row["snowcone"]["num_trails_slopes_open"];
             imgReqs.push(onImageUrl(resort["name"], resort["id"]))
             postoID.push(resort["id"])
         }
@@ -180,7 +180,7 @@ app.post('/resort',(req, res) => {
             }
         }
         return rp({uri:onTheSnowUrl(stateCode,"skireport"),json:true})
-    }) 
+    })
     .then((data)=>{
         for(let row of data["rows"]){
             let resort =returnObject[row["_id"]];
@@ -212,18 +212,49 @@ app.post('/resort',(req, res) => {
                 resort_array[resort]["cost"]=null;
             }
         }
-        resort_array.sort((a,b)=>{
-            if (a["cost"] === b["cost"])
-                return 0;
-            else if (a["cost"] === null)
-                return 1;
-            else if (b["cost"] === null)
-                return -1;
-            else if (price==0)
-                return a["cost"] < b["cost"] ? -1 : 1;
-            else if (price==1)
-                return a["cost"] < b["cost"] ? 1 : -1;
-        })
+        if (price == 0 || price == 1){
+          resort_array.sort((a,b)=>{
+              if (a["cost"] === b["cost"])
+                  return 0;
+              else if (a["cost"] === null)
+                  return 1;
+              else if (b["cost"] === null)
+                  return -1;
+              else if (price==0)
+                  return a["cost"] < b["cost"] ? -1 : 1;
+              else if (price==1)
+                  return a["cost"] < b["cost"] ? 1 : -1;
+                })
+        }
+        if (price == -1){
+          resort_array.sort((a,b)=>{
+              if (a["rating"] === b["rating"])
+                  return 0;
+              else if (a["rating"] === null)
+                  return 1;
+              else if (b["rating"] === null)
+                  return -1;
+              else if (rating==0)
+                  return a["rating"] < b["rating"] ? -1 : 1;
+              else if (rating==1)
+                  return a["rating"] < b["rating"] ? 1 : -1;
+                })
+        }
+        if (price == 2){
+          resort_array.sort((a,b)=>{
+              if (a["slopesOpen"] === b["slopesOpen"])
+                  return 0;
+              else if (a["slopesOpen"] === null)
+                  return 1;
+              else if (b["slopesOpen"] === null)
+                  return -1;
+              else if (rating==0)
+                  return a["slopesOpen"] < b["slopesOpen"] ? -1 : 1;
+              else if (rating==1)
+                  return a["slopesOpen"] < b["slopesOpen"] ? 1 : -1;
+                })
+        }
+
         res.send(JSON.stringify(resort_array));
     })
 
@@ -268,7 +299,7 @@ app.post('/hotel',(req, res) => {
 
         res.send(JSON.stringify(returnthing["data"]))
     })
-    
+
 })
 var _include_headers = function(body, response, resolveWithFullResponse) {
     return {'headers': response.headers, 'data': body};
@@ -351,7 +382,7 @@ app.post('/flight',(req, res) => {
             res.send(JSON.stringify(returnthing["data"]));
         })
     })
- 
+
 app.post('/trip',(req, res) => {
     var thing = new Trip(req.body);
     thing.save(function(err,trip) {
@@ -361,7 +392,7 @@ app.post('/trip',(req, res) => {
 });
 app.get('/getTrip',(req, res) => {
     Trip.findOne({_id:req.query.id}).then((doc)=>{
-        res.send(JSON.stringify(doc)); 
+        res.send(JSON.stringify(doc));
     });
 });
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))
