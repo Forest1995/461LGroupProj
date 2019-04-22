@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { NavController ,NavParams} from 'ionic-angular';
 import { HotelsNearSilvertonPage } from '../hotels-near-silverton/hotels-near-silverton';
 import { ServerRequest } from '../../request/api'
+import { resolveDefinition } from '@angular/core/src/view/util';
 
 
 @Component({
@@ -17,6 +18,7 @@ export class ResortsPage {
   resorts:Array<any> = new Array<any>();
   priceDirection :String;
   state :string;
+
 
   constructor(public navCtrl: NavController, public navParams: NavParams) {
     this.state= "CO";
@@ -44,14 +46,11 @@ export class ResortsPage {
 
   ionViewWillEnter(){
     this.refreshData();
-
   }
     //get date from previous page
     //use default state and price
-    
 
-
-  goToHotelsNearSilverton(resort){
+    goToHotelsNearSilverton(resort){
     this.navCtrl.push(HotelsNearSilvertonPage,{
       start : this.startDate,
       end: this.endDate,

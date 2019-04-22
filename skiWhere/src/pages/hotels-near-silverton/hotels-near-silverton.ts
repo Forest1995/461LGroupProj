@@ -33,17 +33,14 @@ export class HotelsNearSilvertonPage {
     this.endDate = navParams.get('end');
     this.state = navParams.get('state');
     this.resort = navParams.get('resort');
-    console.log(this.startDate);
-    console.log(this.endDate);
   }
   refreshData(){
     this.hotels=new Array<any>();
     this.api.postHotels(this.startDate,this.endDate,this.stateDB[this.state]).then((resData)=>{
       for(let x of resData){
-
+        
         this.hotels.push(x);
       }
-      this.hotels.push({name:"hi",price:10,address:"hiii",rating:3.4});
     })
   }
   ionViewWillEnter(){

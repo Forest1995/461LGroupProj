@@ -1,7 +1,7 @@
 <ion-header>
   <ion-navbar>
     <ion-title>
-      Hotels near Silverton
+      Hotels near {{resort.name}}
     </ion-title>
   </ion-navbar>
 </ion-header>
@@ -17,7 +17,7 @@
         <ion-option>
           Price
         </ion-option>
-        <ion-option>
+        <!-- <ion-option>
           Distance
         </ion-option>
         <ion-option>
@@ -25,21 +25,21 @@
         </ion-option>
         <ion-option>
           Weather
-        </ion-option>
+        </ion-option> -->
       </ion-select>
     </ion-item>
   </form>
   <ion-list id="hotelsNearSilverton-list3">
     <ion-item  id="hotelsNearSilverton-list-item17" on-click="goToFlights(hotel)" *ngFor="let hotel of hotels">
       <ion-thumbnail item-left>
-        <img src="assets/img/2Q" />
+        <img [src]="hotel.imageUrl" />
       </ion-thumbnail>
       <h2>
         {{hotel.hotel_name}}
       </h2>
-      <h4>
+      <!-- <h4>
         US ${{hotel.hotel_price}} for entire booking, 
-      </h4>
+      </h4> -->
       <h4>
           Address {{hotel.address}}
       </h4>
