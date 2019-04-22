@@ -6,17 +6,17 @@ var mongo = require('mongoose');
 mongo.Promise = require('bluebird');
 var tripSchema, Trip;
 
-// mongo.connect(process.env.MONGODB_URI || "mongodb://localhost:27017/datastore",{
-//     user:process.env.mdb_user,
-//     pass:process.env.mdb_password,
-//     useMongoClient:true,
-// }).then(()=>{
-//     tripSchema = new mongo.Schema({}, { strict: false });
-//     Trip = mongo.model('Thing', tripSchema);   
-// }).catch(err=>{
-//     console.error(err);
-//     process.exit(-1);
-// });
+mongo.connect(process.env.MONGODB_URI || "mongodb://localhost:27017/datastore",{
+    user:process.env.mdb_user,
+    pass:process.env.mdb_password,
+    useMongoClient:true,
+}).then(()=>{
+    tripSchema = new mongo.Schema({}, { strict: false });
+    Trip = mongo.model('Thing', tripSchema);   
+}).catch(err=>{
+    console.error(err);
+    process.exit(-1);
+});
 
 
 
@@ -367,21 +367,32 @@ app.get('/getTrip',(req, res) => {
 });
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))
 
+//returns a {} with latitude and longitude attributes
+const locationPromise = name =>{
+    return new Promise((resolve,reject)=>{
+        nameUri=name.replace(' ','+');
+        //console.log('Uri:'+nameUri);
+        urip = 'https://maps.googleapis.com/maps/api/geocode/json?address='+name+'&key='+geocodekey;
+        rp({uri:urip}).then((data)=>{
+            data = JSON.parse(data);
+            //console.log('response:'+data['results'][0]['geometry']['location']['lat']);
+            let responseboi = {};
+            responseboi['latitude'] = data['results'][0]['geometry']['location']['lat'];
+            responseboi['longitude'] = data['results'][0]['geometry']['location']['lng'];
+            resolve(responseboi);
+        })
+    })
+}
+
 
 app.post('/location',(req, res)=>{
     if(geocodekey==null){
         console.log('Need geocode api key');
     }
     var name = req.body.name;
-    nameUri=name.replace(' ','+');
-    console.log('Uri:'+nameUri);
-    urip = 'https://maps.googleapis.com/maps/api/geocode/json?address='+name+'&key='+geocodekey;
-    rp({uri:urip}).then((data)=>{
-        data = JSON.parse(data);
-        console.log(data.results);
-        let responseboi = {};
-        responseboi['latitude'] = data['results'][0]['geometry']['location']['lat'];
-        responseboi['longitude'] = data['results'][0]['geometry']['location']['lng'];
-        res.send(JSON.stringify(responseboi));
+    locationPromise(name).then((info)=>{
+        console.log('mystuff:');
+        console.log(info);
+        res.send(JSON.stringify(info));
     })
 })
