@@ -2,7 +2,7 @@ import { LoadingController} from 'ionic-angular';
 import { Http ,RequestOptions, Headers} from '@angular/http';
 
 export class ServerRequest{
-    private server_url : string = "https://skiwheredb.herokuapp.com";
+    private server_url : string = "http://localhost:3000";//https://skiwheredb.herokuapp.com
     private static _instance : ServerRequest;
     public cached : any;
     constructor(private http: Http,public loadingCtrl: LoadingController) {
@@ -55,7 +55,7 @@ export class ServerRequest{
         }).then((response : string)=>{
               return JSON.parse(response)
         });
-        
+
     }
     public postTrip(data){
         return this.apiDirectCall(this.server_url+"/trip",data).then((response : string)=>{
