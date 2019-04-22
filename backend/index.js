@@ -234,10 +234,8 @@ app.post('/resort',(req, res) => {
                   return 1;
               else if (b["rating"] === null)
                   return -1;
-              else if (rating==0)
+              else
                   return a["rating"] < b["rating"] ? -1 : 1;
-              else if (rating==1)
-                  return a["rating"] < b["rating"] ? 1 : -1;
                 })
         }
         if (price == 2){
@@ -248,9 +246,7 @@ app.post('/resort',(req, res) => {
                   return 1;
               else if (b["slopesOpen"] === null)
                   return -1;
-              else if (rating==0)
-                  return a["slopesOpen"] < b["slopesOpen"] ? -1 : 1;
-              else if (rating==1)
+              else
                   return a["slopesOpen"] < b["slopesOpen"] ? 1 : -1;
                 })
         }
