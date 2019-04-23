@@ -265,14 +265,24 @@ app.post('/hotel',(req, res) => {
         res.send(500,"args wrong or unsupported state");
         return;
     }
-    rp(hotelgetLocationURL(location))
-    .then((response)=> {
-        console.log(response);
+
+    if(geocodekey==null){
+        console.log('Need geocode api key');
+    }
+    // var name = req.body.name;
+    locationPromise(location).then((info)=>{
+        console.log('mystuff:');
+        console.log(info);
+        //res.send(JSON.stringify(info));
+        return info
+    })
+    .then((latlong)=> {
+        console.log(latlong);
         var lat = 0.0;
         var long = 0.0;
-        if(response[0] != null) {
-            lat = response[0]['latitude'];
-            long = response[0]['longitude'];
+        if(latlong['longitude'] != null) {
+            lat = latlong['latitude'];
+            long = latlong['longitude'];
         }
         return rp(hotelUrl(checkin, checkout, lat, long))
     })
@@ -412,7 +422,7 @@ app.get('/getTrip',(req, res) => {
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))
 
 //returns a {} with latitude and longitude attributes
-const locationPromise = name =>{
+function locationPromise(name){
     return new Promise((resolve,reject)=>{
         nameUri=name.replace(' ','+');
         //console.log('Uri:'+nameUri);
