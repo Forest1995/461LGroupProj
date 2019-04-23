@@ -14,7 +14,7 @@
         <ion-select [(ngModel)]="state" (ionChange)="refreshData()">
           <ion-option value="CO">Colorado</ion-option>
           <ion-option value="NH">New Hampshire</ion-option>
-          <ion-option value="CA">California</ion-option>
+          <ion-option value="CA">California</ion-option>            
           <ion-option value="MI">Michigan</ion-option>
           <ion-option value="WI">Wisconsin</ion-option>
           <ion-option value="NY">New York</ion-option>
@@ -30,8 +30,8 @@
       <ion-select [(ngModel)]="priceDirection" (ionChange)="refreshData()">
         <ion-option value="0">Price Ascending</ion-option>
         <ion-option value="1">Price Descending</ion-option>
-        <ion-option value="-1">Resort Rating</ion-option>
-        <ion-option value="2">Slopes Open</ion-option>
+        <ion-option value="-1">Mountain Rating</ion-option>
+        <ion-option value="2">Open Slopes</ion-option>
       </ion-select>
     </ion-item>
     <ion-item>

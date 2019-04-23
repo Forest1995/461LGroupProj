@@ -32,9 +32,9 @@ export class ServerRequest{
         return JSON.parse(response)
       });
     }
-    public postHotels(start:string,end:string,location:string){
+    public postHotels(start:string,end:string,location:string, price:number){
         return this.apiDirectCall(this.server_url+"/hotel",{
-            checkin:start,checkout:end,location:location
+            checkin:start,checkout:end,location:location, price:price
         }).then((response : string)=>{
             return JSON.parse(response)
         });
@@ -55,7 +55,7 @@ export class ServerRequest{
         }).then((response : string)=>{
               return JSON.parse(response)
         });
-
+        
     }
     public postTrip(data){
         return this.apiDirectCall(this.server_url+"/trip",data).then((response : string)=>{
