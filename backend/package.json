@@ -4,12 +4,15 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js"
+    "start": "node index.js",
+    "test": "mocha"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "bluebird": "^3.5.3",
+    "chai": "^4.2.0",
+    "chai-http": "^4.2.1",
     "cheerio": "^1.0.0-rc.2",
     "cors": "^2.8.5",
     "express": "^4.16.4",
