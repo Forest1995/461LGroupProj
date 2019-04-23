@@ -38,10 +38,10 @@ export class HotelsNearSilvertonPage {
   }
   refreshData(){
     this.hotels=new Array<any>();
-    this.api.postHotels(this.startDate,this.endDate,this.stateDB[this.state],parseInt(""+this.priceDirection)).then((resData)=>{
+    this.api.postHotels(this.startDate,this.endDate,this.resort.name+"+ski,+"+this.state,parseInt(""+this.priceDirection)).then((resData)=>{
       for(let x of resData){
-        
-        this.hotels.push(x);
+        if(x.address && x.address.length>0)
+          this.hotels.push(x);
       }
     })
   }

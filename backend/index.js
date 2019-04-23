@@ -27,6 +27,7 @@ const port = process.env.PORT || 3000
 const fskey = process.env.FlightKey;
 const hkey = process.env.HotelKey;
 const imageKey = process.env.ImageKey;
+const geocodekey = process.env.GeocodeKey;
 
 app.get('/', (req, res) => res.send('Hello World!'))
 
@@ -264,14 +265,24 @@ app.post('/hotel',(req, res) => {
         res.send(500,"args wrong or unsupported state");
         return;
     }
-    rp(hotelgetLocationURL(location))
-    .then((response)=> {
-        console.log(response);
+
+    if(geocodekey==null){
+        console.log('Need geocode api key');
+    }
+    // var name = req.body.name;
+    locationPromise(location).then((info)=>{
+        console.log('mystuff:');
+        console.log(info);
+        //res.send(JSON.stringify(info));
+        return info
+    })
+    .then((latlong)=> {
+        console.log(latlong);
         var lat = 0.0;
         var long = 0.0;
-        if(response[0] != null) {
-            lat = response[0]['latitude'];
-            long = response[0]['longitude'];
+        if(latlong['longitude'] != null) {
+            lat = latlong['latitude'];
+            long = latlong['longitude'];
         }
         return rp(hotelUrl(checkin, checkout, lat, long))
     })
@@ -409,3 +420,33 @@ app.get('/getTrip',(req, res) => {
     });
 });
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))
+
+//returns a {} with latitude and longitude attributes
+function locationPromise(name){
+    return new Promise((resolve,reject)=>{
+        nameUri=name.replace(' ','+');
+        //console.log('Uri:'+nameUri);
+        urip = 'https://maps.googleapis.com/maps/api/geocode/json?address='+name+'&key='+geocodekey;
+        rp({uri:urip}).then((data)=>{
+            data = JSON.parse(data);
+            //console.log('response:'+data['results'][0]['geometry']['location']['lat']);
+            let responseboi = {};
+            responseboi['latitude'] = data['results'][0]['geometry']['location']['lat'];
+            responseboi['longitude'] = data['results'][0]['geometry']['location']['lng'];
+            resolve(responseboi);
+        })
+    })
+}
+
+
+app.post('/location',(req, res)=>{
+    if(geocodekey==null){
+        console.log('Need geocode api key');
+    }
+    var name = req.body.name;
+    locationPromise(name).then((info)=>{
+        console.log('mystuff:');
+        console.log(info);
+        res.send(JSON.stringify(info));
+    })
+})
