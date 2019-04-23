@@ -9,26 +9,13 @@
   <form id="hotelsNearSilverton-form4">
     <ion-searchbar placeholder="Search for resorts" name="" id="hotelsNearSilverton-search2"></ion-searchbar>
     <button ion-button block = "true" on-click="load()">Search</button>
-    <ion-item id="hotelsNearSilverton-select3">
-      <ion-label>
-        Sort By
-      </ion-label>
-      <ion-select name="">
-        <ion-option>
-          Price
-        </ion-option>
-        <!-- <ion-option>
-          Distance
-        </ion-option>
-        <ion-option>
-          State
-        </ion-option>
-        <ion-option>
-          Weather
-        </ion-option> -->
-      </ion-select>
-    </ion-item>
   </form>
+  <ion-label>Sort</ion-label>
+  <ion-select [(ngModel)]="priceDirection" (ionChange)="refreshData()">
+    <ion-option value="0">Price Ascending</ion-option>
+    <ion-option value="1">Price Descending</ion-option>
+    <ion-option value="-1">Rating</ion-option>
+  </ion-select>
   <ion-list id="hotelsNearSilverton-list3">
     <ion-item  id="hotelsNearSilverton-list-item17" on-click="goToFlights(hotel)" *ngFor="let hotel of hotels">
       <ion-thumbnail item-left>
@@ -37,9 +24,9 @@
       <h2>
         {{hotel.hotel_name}}
       </h2>
-      <!-- <h4>
+      <h4>
         US ${{hotel.hotel_price}} for entire booking, 
-      </h4> -->
+      </h4>
       <h4>
           Address {{hotel.address}}
       </h4>

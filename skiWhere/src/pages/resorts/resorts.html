@@ -26,10 +26,12 @@
         </ion-select>
     </ion-item>
     <ion-item>
-      <ion-label>Price</ion-label>
+      <ion-label>Sort</ion-label>
       <ion-select [(ngModel)]="priceDirection" (ionChange)="refreshData()">
-        <ion-option value="0">Ascending</ion-option>
-        <ion-option value="1">Descending</ion-option>
+        <ion-option value="0">Price Ascending</ion-option>
+        <ion-option value="1">Price Descending</ion-option>
+        <ion-option value="-1">Mountain Rating</ion-option>
+        <ion-option value="2">Open Slopes</ion-option>
       </ion-select>
     </ion-item>
     <ion-item>
