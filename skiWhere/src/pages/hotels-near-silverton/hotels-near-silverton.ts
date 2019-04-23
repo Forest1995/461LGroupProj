@@ -38,7 +38,7 @@ export class HotelsNearSilvertonPage {
   }
   refreshData(){
     this.hotels=new Array<any>();
-    this.api.postHotels(this.startDate,this.endDate,this.stateDB[this.state],parseInt(""+this.priceDirection)).then((resData)=>{
+    this.api.postHotels(this.startDate,this.endDate,this.resort+","+this.state,parseInt(""+this.priceDirection)).then((resData)=>{
       for(let x of resData){
         
         this.hotels.push(x);
