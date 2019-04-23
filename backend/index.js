@@ -6,17 +6,17 @@ var mongo = require('mongoose');
 mongo.Promise = require('bluebird');
 var tripSchema, Trip;
 
-// mongo.connect(process.env.MONGODB_URI || "mongodb://localhost:27017/datastore",{
-//     user:process.env.mdb_user,
-//     pass:process.env.mdb_password,
-//     useMongoClient:true,
-// }).then(()=>{
-//     tripSchema = new mongo.Schema({}, { strict: false });
-//     Trip = mongo.model('Thing', tripSchema);   
-// }).catch(err=>{
-//     console.error(err);
-//     process.exit(-1);
-// });
+mongo.connect(process.env.MONGODB_URI || "mongodb://localhost:27017/datastore",{
+    user:process.env.mdb_user,
+    pass:process.env.mdb_password,
+    useMongoClient:true,
+}).then(()=>{
+    tripSchema = new mongo.Schema({}, { strict: false });
+    Trip = mongo.model('Thing', tripSchema);   
+}).catch(err=>{
+    console.error(err);
+    process.exit(-1);
+});
 
 const app = express()
 app.use(cors())
