@@ -34,7 +34,7 @@
         </ion-item>
         <ion-item color="none" >
           <ion-thumbnail item-left>
-            <img src="resort.img_src" />
+            <img [src]="resort.imageUrl" />
           </ion-thumbnail>
           <h2>
             {{resort.name}}
@@ -61,7 +61,7 @@
         </ion-item>
         <ion-item  id="hotelsNearSilverton-list-item17">
           <ion-thumbnail item-left>
-            <img src="assets/img/2Q" />
+            <img [src]="hotel.imageUrl" />
           </ion-thumbnail>
           <h2>
             {{hotel.hotel_name}}
@@ -90,15 +90,16 @@
       <ion-item color="none"id="flights-list-item33">
         <ion-thumbnail item-left>
           <ion-icon name="plane" item-left></ion-icon>
+          <img [src]="flight.imageUrl" />
         </ion-thumbnail>
         <h2>
           {{flight.airline}}
         </h2>
         <table align="center">
           <tr>
-            <th>{{origin}}</th>
+            <th>{{flight.origin}}</th>
             <th><ion-icon name="arrow-back"></ion-icon><ion-icon name="arrow-forward"></ion-icon></th>
-            <th>{{dest}}</th>
+            <th>{{flight.dest}}</th>
           </tr>
           <tr>
               <td>{{flight.leave_time1}}</td>

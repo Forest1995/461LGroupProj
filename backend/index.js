@@ -5,6 +5,7 @@ var cheerio = require('cheerio');
 var mongo = require('mongoose');
 mongo.Promise = require('bluebird');
 var tripSchema, Trip;
+
 mongo.connect(process.env.MONGODB_URI || "mongodb://localhost:27017/datastore",{
     user:process.env.mdb_user,
     pass:process.env.mdb_password,
@@ -17,7 +18,6 @@ mongo.connect(process.env.MONGODB_URI || "mongodb://localhost:27017/datastore",{
     process.exit(-1);
 });
 
-
 const app = express()
 app.use(cors())
 
@@ -26,6 +26,8 @@ app.use(express.json());
 const port = process.env.PORT || 3000
 const fskey = process.env.FlightKey;
 const hkey = process.env.HotelKey;
+const imageKey = process.env.ImageKey;
+const geocodekey = process.env.GeocodeKey;
 
 app.get('/', (req, res) => res.send('Hello World!'))
 
@@ -44,6 +46,20 @@ const stateDB ={
 }
 function onTheSnowUrl(state,type){
     return "https://skiapp.onthesnow.com/app/widgets/resortlist?region=us&regionids="+state+"&language=en&pagetype="+type+"&direction=-1&order=stop&limit=100&offset=0&countrycode=USA&minvalue=-1&open=anystatus"
+}
+function onImageUrl(name, id) {
+    const options = {
+        uri: `https://api.cognitive.microsoft.com/bing/v7.0/images/search?q=${name}+ski+resort&count=1&offset=0&mkt=en-us&safeSearch=Moderate`,
+        headers: {
+            'Ocp-Apim-Subscription-Key': imageKey
+        },
+        json: true 
+    }
+    return rp(options).then((data) => {
+        return data
+    }).catch((err) => {
+        console.log("err in" + name)
+    })
 }
 function flightUrl(orig,dest,date,retdate){
     var options = {
@@ -80,7 +96,7 @@ function flightgetUrl(key){
             pageSize : 100,
         },
         headers: {
-            'X-RapidAPI-Key': fskey,
+            'X-RapidAPI-Key': fskey
         },
         json: true // Automatically parses the JSON string in the response
     };
@@ -105,7 +121,7 @@ function hotelUrl(checkin, checkout, lat, long){
             languagecode : 'en-us',
         },
         headers: {
-            'X-RapidAPI-Key': hkey,
+            'X-RapidAPI-Key': hkey
         },
         json: true // Automatically parses the JSON string in the response
     };
@@ -137,19 +153,34 @@ app.post('/resort',(req, res) => {
         return;
     }
     let returnObject={};
+    let postoID = []
     //skireport
     rp({uri:onTheSnowUrl(stateCode,"profile"),json:true})
     .then((data)=>{
+        let imgReqs = []
         for(let row of data["rows"]){
             let resort ={};
             resort["id"]=row["_id"];
             resort["name"]=row["resort_name"];
             resort["rating"]=row["reviewTotals"]["overall"];
             resort["isOpen"]=row["snowcone"]["open_flag"];
+            resort["slopesOpen"]=row["snowcone"]["num_trails_slopes_open"];
             returnObject[resort["id"]] = resort;
+            imgReqs.push(onImageUrl(resort["name"], resort["id"]))
+            postoID.push(resort["id"])
+        }
+        return Promise.all(imgReqs)
+    })
+    .then((data) => {
+        for (let i = 0; i < data.length; i++) {
+            if (!data[i]) {
+                returnObject[postoID[i]].imageUrl = ""
+            }  else {
+                returnObject[postoID[i]].imageUrl = data[i].value[0].contentUrl
+            }
         }
         return rp({uri:onTheSnowUrl(stateCode,"skireport"),json:true})
-    })
+    }) 
     .then((data)=>{
         for(let row of data["rows"]){
             let resort =returnObject[row["_id"]];
@@ -181,18 +212,45 @@ app.post('/resort',(req, res) => {
                 resort_array[resort]["cost"]=null;
             }
         }
-        resort_array.sort((a,b)=>{
-            if (a["cost"] === b["cost"])
-                return 0;
-            else if (a["cost"] === null)
-                return 1;
-            else if (b["cost"] === null)
-                return -1;
-            else if (price==0)
-                return a["cost"] < b["cost"] ? -1 : 1;
-            else if (price==1)
-                return a["cost"] < b["cost"] ? 1 : -1;
-        })
+        if (price == 0 || price == 1){
+            resort_array.sort((a,b)=>{
+                if (a["cost"] === b["cost"])
+                    return 0;
+                else if (a["cost"] === null)
+                    return 1;
+                else if (b["cost"] === null)
+                    return -1;
+                else if (price==0)
+                    return a["cost"] < b["cost"] ? -1 : 1;
+                else if (price==1)
+                    return a["cost"] < b["cost"] ? 1 : -1;
+                  })
+          }
+          if (price == -1){
+            resort_array.sort((a,b)=>{
+                if (a["rating"] === b["rating"])
+                    return 0;
+                else if (a["rating"] === null)
+                    return 1;
+                else if (b["rating"] === null)
+                    return -1;
+                else
+                    return a["rating"] > b["rating"] ? -1 : 1;
+                  })
+          }
+          if (price == 2){
+            resort_array.sort((a,b)=>{
+                if (a["slopesOpen"] === b["slopesOpen"])
+                    return 0;
+                else if (a["slopesOpen"] === null)
+                    return 1;
+                else if (b["slopesOpen"] === null)
+                    return -1;
+                else
+                    return a["slopesOpen"] < b["slopesOpen"] ? 1 : -1;
+                  })
+          }
+          
         res.send(JSON.stringify(resort_array));
     })
 
@@ -201,24 +259,34 @@ app.post('/hotel',(req, res) => {
     let checkin= req.body.checkin;
     let checkout= req.body.checkout;
     let location= req.body.location;
+    let price = req.body.price;
 
-    if(checkin == null || checkout == null || location == null){
+    if(checkin == null || checkout == null || location == null || price == null){
         res.send(500,"args wrong or unsupported state");
         return;
     }
-    rp(hotelgetLocationURL(location))
-    .then((response)=> {
-        console.log(response);
+
+    if(geocodekey==null){
+        console.log('Need geocode api key');
+    }
+    // var name = req.body.name;
+    locationPromise(location).then((info)=>{
+        console.log('mystuff:');
+        console.log(info);
+        //res.send(JSON.stringify(info));
+        return info
+    })
+    .then((latlong)=> {
+        console.log(latlong);
         var lat = 0.0;
         var long = 0.0;
-        if(response[0] != null) {
-            lat = response[0]['latitude'];
-            long = response[0]['longitude'];
+        if(latlong['longitude'] != null) {
+            lat = latlong['latitude'];
+            long = latlong['longitude'];
         }
         return rp(hotelUrl(checkin, checkout, lat, long))
     })
     .then((response)=> {
-        //console.log(response);
         data = []
         returnthing = {data};
 
@@ -231,9 +299,35 @@ app.post('/hotel',(req, res) => {
                 thishotel['hotel_price'] = null;
             thishotel['address'] = hotel['address']
             thishotel['rating'] = hotel['review_score']
+            thishotel['imageUrl'] = hotel['main_photo_url']
             returnthing['data'].push(thishotel);
         }
-
+        if (price == 0 || price == 1){
+            returnthing['data'].sort((a,b)=>{
+                if (a["hotel_price"] === b["hotel_price"])
+                    return 0;
+                else if (a["hotel_price"] === null)
+                    return 1;
+                else if (b["hotel_price"] === null)
+                    return -1;
+                else if (price==0)
+                    return a["hotel_price"] < b["hotel_price"] ? -1 : 1;
+                else if (price==1)
+                    return a["hotel_price"] < b["hotel_price"] ? 1 : -1;
+                  })
+          }
+          if (price == -1){
+            returnthing['data'].sort((a,b)=>{
+                if (a["rating"] === b["rating"])
+                    return 0;
+                else if (a["rating"] === null)
+                    return 1;
+                else if (b["rating"] === null)
+                    return -1;
+                else
+                    return a["rating"] > b["rating"] ? -1 : 1;
+                  })
+          }
         res.send(JSON.stringify(returnthing["data"]))
     })
     
@@ -241,8 +335,16 @@ app.post('/hotel',(req, res) => {
 var _include_headers = function(body, response, resolveWithFullResponse) {
     return {'headers': response.headers, 'data': body};
   };
+
+function sleep(millis) {
+    return new Promise(resolve => setTimeout(resolve, millis));
+}
 app.post('/flight',(req, res) => {
         //Request must have state, price asc and decending
+        if(fskey == null){
+            console.log('Local flight api key not set');
+        }
+
         let orig= req.body.orig;
         let dest= req.body.dest;
         let date= req.body.date;
@@ -256,6 +358,13 @@ app.post('/flight',(req, res) => {
         .then((res)=>{
             console.log(res);
             var key = res.headers['location'];
+            var datatest = null;
+            // while((datatest==null)||(datatest['Itineraries'].length()<10)){
+            //     rp(flightgetUrl(key))
+            //     .then((response)=>{
+            //         datatest=response;
+            //     })
+            // }
             return rp(flightgetUrl(key))
         })
         .then((response)=>{
@@ -273,6 +382,7 @@ app.post('/flight',(req, res) => {
             k=0;
             var arr2 = [];
             for(let carrier of response['Carriers']){
+                console.log(carrier)
                 var part = [carrier['Id'],k];
                 k++;
                 arr2.push(part);
@@ -289,6 +399,7 @@ app.post('/flight',(req, res) => {
                 thistrip['arrive_time2'] = response['Legs'][j]['Arrival'];
 
                 thistrip['airline'] = response['Carriers'][Carriermap.get(response['Legs'][i]['Carriers'][0])]['Name'];
+                thistrip['imageUrl'] = response['Carriers'][Carriermap.get(response['Legs'][i]['Carriers'][0])]['ImageUrl'];
                 count++;
                 returnthing['data'].push(thistrip);
             }
@@ -309,3 +420,33 @@ app.get('/getTrip',(req, res) => {
     });
 });
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))
+
+//returns a {} with latitude and longitude attributes
+function locationPromise(name){
+    return new Promise((resolve,reject)=>{
+        nameUri=name.replace(' ','+');
+        //console.log('Uri:'+nameUri);
+        urip = 'https://maps.googleapis.com/maps/api/geocode/json?address='+name+'&key='+geocodekey;
+        rp({uri:urip}).then((data)=>{
+            data = JSON.parse(data);
+            //console.log('response:'+data['results'][0]['geometry']['location']['lat']);
+            let responseboi = {};
+            responseboi['latitude'] = data['results'][0]['geometry']['location']['lat'];
+            responseboi['longitude'] = data['results'][0]['geometry']['location']['lng'];
+            resolve(responseboi);
+        })
+    })
+}
+
+
+app.post('/location',(req, res)=>{
+    if(geocodekey==null){
+        console.log('Need geocode api key');
+    }
+    var name = req.body.name;
+    locationPromise(name).then((info)=>{
+        console.log('mystuff:');
+        console.log(info);
+        res.send(JSON.stringify(info));
+    })
+})

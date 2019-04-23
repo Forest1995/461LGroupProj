@@ -11,6 +11,8 @@ export class FlightsPage {
   flights : Array<any> = new Array<any>();
   dest:string;
   origin:string;
+  dest_static:string = "To";
+  origin_static:string = "From";
   api: ServerRequest;
   startDate : string;
   endDate : string;
@@ -28,12 +30,17 @@ export class FlightsPage {
     console.log(this.endDate);
   }
   refreshFlights(){
+    this.dest_static = this.dest.toUpperCase();
+    this.origin_static = this.origin.toUpperCase();
     //make this dynamic
     this.api.postFlights(this.startDate,this.endDate,this.origin.toUpperCase(),this.dest.toUpperCase()).then((resData)=>{
       this.flights = new Array<any>();
       for(let x of resData){
+        x.origin=this.origin.toUpperCase()
+        x.dest = this.dest.toUpperCase()
         //do processing?? i.e. compute travel time
         this.flights.push(x);
+
       }
       /*this.flights.push({
         leave_time1:"4:30p",

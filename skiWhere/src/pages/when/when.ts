@@ -19,9 +19,11 @@ export class WhenPage {
   }
   
   goToResorts(){
-      this.navCtrl.push(ResortsPage,{
-        start : this.dateRange.from.format("YYYY-MM-DD"),
-        end: this.dateRange.to.format("YYYY-MM-DD"),
-      });     
+      if (this.dateRange != undefined){
+        this.navCtrl.push(ResortsPage,{
+          start : this.dateRange.from.format("YYYY-MM-DD"),
+          end: this.dateRange.to.format("YYYY-MM-DD"),
+        });     
+    }
   }
 }
