@@ -4,7 +4,7 @@ var chaiHttp = require('chai-http');
 
 chai.use(chaiHttp);
 
-describe('Test group', function() {
+describe('Integration Test', function() {
     var host = "https://skiwheredb.herokuapp.com";
     var path = "/resort";
 
@@ -123,20 +123,19 @@ describe('Test group', function() {
                 if (error) {
                     done(error);
                 } else {
-                    
-                    it('should send parameters to : /resort POST with missing params', function(done) {
-                        chai
-                            .request(host)
-                            .post(path)
-                            .send({"retdate":"05/20/2019","orig":"AUS","dest":"DEN"})
-                            .end(function(error, response, body) {
-                                if (error) {
-                                    done(error);
-                                } else {
-                                    done();
-                                }
-                            });
-                    });
+                    done();
+                }
+            });
+    });
+    it('should send parameters to : /resort POST with missing params', function(done) {
+        chai
+            .request(host)
+            .post(path)
+            .send({"retdate":"05/20/2019","orig":"AUS","dest":"DEN"})
+            .end(function(error, response, body) {
+                if (error) {
+                    done(error);
+                } else {
                     done();
                 }
             });

@@ -211,32 +211,8 @@ app.post('/resort',(req, res) => {
                 resort_array[resort]["cost"]=null;
             }
         }
-        if (price == 0 || price == 1){
-            resort_array.sort((a,b)=>{
-                if (a["cost"] === b["cost"])
-                    return 0;
-                else if (a["cost"] === null)
-                    return 1;
-                else if (b["cost"] === null)
-                    return -1;
-                else if (price==0)
-                    return a["cost"] < b["cost"] ? -1 : 1;
-                else if (price==1)
-                    return a["cost"] < b["cost"] ? 1 : -1;
-                  })
-          }
-          if (price == -1){
-            resort_array.sort((a,b)=>{
-                if (a["rating"] === b["rating"])
-                    return 0;
-                else if (a["rating"] === null)
-                    return 1;
-                else if (b["rating"] === null)
-                    return -1;
-                else
-                    return a["rating"] > b["rating"] ? -1 : 1;
-                  })
-          }
+        sortPriceRating(resortArray, price, "cost","rating");
+
           if (price == 2){
             resort_array.sort((a,b)=>{
                 if (a["slopesOpen"] === b["slopesOpen"])
@@ -290,37 +266,47 @@ app.post('/hotel',(req, res) => {
             thishotel['rating'] = hotel['review_score']
             thishotel['imageUrl'] = hotel['main_photo_url']
             returnthing['data'].push(thishotel);
-        }
-        if (price == 0 || price == 1){
-            returnthing['data'].sort((a,b)=>{
-                if (a["hotel_price"] === b["hotel_price"])
-                    return 0;
-                else if (a["hotel_price"] === null)
-                    return 1;
-                else if (b["hotel_price"] === null)
-                    return -1;
-                else if (price==0)
-                    return a["hotel_price"] < b["hotel_price"] ? -1 : 1;
-                else if (price==1)
-                    return a["hotel_price"] < b["hotel_price"] ? 1 : -1;
-                  })
-          }
-          if (price == -1){
-            returnthing['data'].sort((a,b)=>{
-                if (a["rating"] === b["rating"])
-                    return 0;
-                else if (a["rating"] === null)
-                    return 1;
-                else if (b["rating"] === null)
-                    return -1;
-                else
-                    return a["rating"] > b["rating"] ? -1 : 1;
-                  })
-          }
+        } 
+        sortPriceRating(returnthing['data'], price, "hotel_price","rating");
+
         res.send(JSON.stringify(returnthing["data"]))
     })
     
 })
+function sortPriceRating(array, price, value1, value2){
+    if (price == 0 || price == 1){
+        priceSort(array,value1);
+      }
+      if (price == -1){
+        ratingSort(array,value2);
+      }
+}
+function ratingSort(array, value){
+    array.sort((a,b)=>{
+        if (a[value] === b[value])
+            return 0;
+        else if (a[value] === null)
+            return 1;
+        else if (b[value] === null)
+            return -1;
+        else
+            return a[value] > b[value] ? -1 : 1;
+          })
+}
+function priceSort(array, price){
+    array.sort((a,b)=>{
+        if (a[price] === b[price])
+            return 0;
+        else if (a[price] === null)
+            return 1;
+        else if (b[price] === null)
+            return -1;
+        else if (price==0)
+            return a[price] < b[price] ? -1 : 1;
+        else if (price==1)
+            return a[price] < b[price] ? 1 : -1;
+          })
+}
 var _include_headers = function(body, response, resolveWithFullResponse) {
     return {'headers': response.headers, 'data': body};
   };
@@ -377,21 +363,7 @@ app.post('/flight',(req, res) => {
                 arr2.push(part);
             }
             var Carriermap = new Map(arr2)
-            for(let trip of response['Itineraries']){
-                let thistrip = {};
-                thistrip['price'] = trip['PricingOptions'][0]['Price']
-                var i = Legmap.get(trip['OutboundLegId']);
-                var j = Legmap.get(trip['InboundLegId']);
-                thistrip['leave_time1'] = response['Legs'][i]['Departure'];
-                thistrip['arrive_time1'] = response['Legs'][i]['Arrival'];
-                thistrip['leave_time2'] = response['Legs'][j]['Departure'];
-                thistrip['arrive_time2'] = response['Legs'][j]['Arrival'];
-
-                thistrip['airline'] = response['Carriers'][Carriermap.get(response['Legs'][i]['Carriers'][0])]['Name'];
-                thistrip['imageUrl'] = response['Carriers'][Carriermap.get(response['Legs'][i]['Carriers'][0])]['ImageUrl'];
-                count++;
-                returnthing['data'].push(thistrip);
-            }
+            count = flightAdder(response, Legmap, Carriermap, count);
             res.send(JSON.stringify(returnthing["data"]));
         })
     })
@@ -409,3 +381,21 @@ app.get('/getTrip',(req, res) => {
     });
 });
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))
+function flightAdder(response, Legmap, Carriermap, count) {
+    for (let trip of response['Itineraries']) {
+        let thistrip = {};
+        thistrip['price'] = trip['PricingOptions'][0]['Price'];
+        var i = Legmap.get(trip['OutboundLegId']);
+        var j = Legmap.get(trip['InboundLegId']);
+        thistrip['leave_time1'] = response['Legs'][i]['Departure'];
+        thistrip['arrive_time1'] = response['Legs'][i]['Arrival'];
+        thistrip['leave_time2'] = response['Legs'][j]['Departure'];
+        thistrip['arrive_time2'] = response['Legs'][j]['Arrival'];
+        thistrip['airline'] = response['Carriers'][Carriermap.get(response['Legs'][i]['Carriers'][0])]['Name'];
+        thistrip['imageUrl'] = response['Carriers'][Carriermap.get(response['Legs'][i]['Carriers'][0])]['ImageUrl'];
+        count++;
+        returnthing['data'].push(thistrip);
+    }
+    return count;
+}
+
