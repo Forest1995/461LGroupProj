@@ -14,6 +14,7 @@ export class HotelsNearSilvertonPage {
   endDate : string;
   state: string;
   resort: any;
+  priceDirection :String;
   stateDB ={
     "CO":"Denver, Colorado",
     "NH":"Concord, New Hampshire",
@@ -29,6 +30,7 @@ export class HotelsNearSilvertonPage {
 }
   constructor(public navCtrl: NavController,public navParams: NavParams) {
     this.api = ServerRequest.Instance();
+    this.priceDirection = "0";
     this.startDate = navParams.get('start');
     this.endDate = navParams.get('end');
     this.state = navParams.get('state');
@@ -36,10 +38,10 @@ export class HotelsNearSilvertonPage {
   }
   refreshData(){
     this.hotels=new Array<any>();
-    this.api.postHotels(this.startDate,this.endDate,this.stateDB[this.state]).then((resData)=>{
+    this.api.postHotels(this.startDate,this.endDate,this.resort.name+"+ski,+"+this.state,parseInt(""+this.priceDirection)).then((resData)=>{
       for(let x of resData){
-        
-        this.hotels.push(x);
+        if(x.address && x.address.length>0)
+          this.hotels.push(x);
       }
     })
   }
