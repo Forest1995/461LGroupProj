@@ -482,7 +482,7 @@ function fillAirportCodes(){
         var textByLine = data.split("\n");
         for (var line of textByLine){
             var length = line.length;
-            var value = line.substring(length-5,length-2);
+            var value = line.substring(length-4,length-1);
             var slash = line.search('/');
             var comma = line.search(',');
             if(slash == -1){slash = 999;}
