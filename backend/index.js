@@ -360,11 +360,11 @@ app.post('/flight',(req, res) => {
             return;
         }
         if(orig.length>3){
-            orig = orig.toLowerCase;
+            orig = orig.toLowerCase();
             orig = airportCodeMap.get(orig);
         }
         if(dest.length>3){
-            orig = orig.toLowerCase;
+            orig = orig.toLowerCase();
             orig = airportCodeMap.get(orig);
         }
         rp(flightUrl(orig,dest,date,retdate))
