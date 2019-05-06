@@ -37,7 +37,7 @@
     <ion-item>
         <ion-searchbar placeholder="Search for resorts" name="" id="resorts-search1" [(ngModel)]="searchTerm" (ionChange)="setFilteredItems()"></ion-searchbar>
     </ion-item>
-    <ion-item color="none" on-click="goToHotelsNearSilverton(resort)" *ngFor="let resort of resorts">
+    <ion-item color="none" on-click="goToHotelsNearSilverton(resort)" *ngFor="let resort of resorts"> 
       <ion-thumbnail item-left>
         <img [src]="resort.imageUrl" />
       </ion-thumbnail>

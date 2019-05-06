@@ -38,6 +38,23 @@ export class FlightsPage {
       for(let x of resData){
         x.origin=this.origin.toUpperCase()
         x.dest = this.dest.toUpperCase()
+        //2019-06-01T21:19:00
+        var dateLeave1 = x.leave_time1.substring(0,11);
+        var dateArrive1 = x.arrive_time1.substring(0,11);
+        x.leave_time1 = x.leave_time1.substring(11);
+        x.arrive_time1 = x.arrive_time1.substring(11);
+        if (dateLeave1 != dateArrive1){
+          x.arrive_time1 = "+" + x.arrive_time1;
+        }
+        var dateLeave2 = x.leave_time2.substring(0,11);
+        var dateArrive2 = x.arrive_time2.substring(0,11);
+        x.leave_time2 = x.leave_time2.substring(11);
+        x.arrive_time2 = x.arrive_time2.substring(11);
+        if (dateLeave2 != dateArrive2){
+          x.arrive_time2 = "+" + x.arrive_time2;
+        }
+
+
         //do processing?? i.e. compute travel time
         this.flights.push(x);
 
