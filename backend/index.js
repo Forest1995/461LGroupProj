@@ -3,8 +3,10 @@ const rp = require('request-promise');
 var cors = require('cors')
 var cheerio = require('cheerio');
 var mongo = require('mongoose');
+var fs = require('fs')
 mongo.Promise = require('bluebird');
-var tripSchema, Trip;
+var tripSchema, Trip
+var airportCodeMap = null;
 
 mongo.connect(process.env.MONGODB_URI || "mongodb://localhost:27017/datastore",{
     user:process.env.mdb_user,
@@ -146,6 +148,9 @@ function hotelgetLocationURL(location){
 }
 app.post('/resort',(req, res) => {
     //Request must have state, price asc and decending
+    if(airportCodeMap == null){
+        fillAirportCodes();
+    }
     let stateCode = stateDB[req.body.state];
     let price = req.body.price;
     if(price == null || stateCode == null){
@@ -354,6 +359,14 @@ app.post('/flight',(req, res) => {
             res.send(500,"args wrong or unsupported state");
             return;
         }
+        if(orig.length>3){
+            orig = orig.toLowerCase;
+            orig = airportCodeMap.get(orig);
+        }
+        if(dest.length>3){
+            orig = orig.toLowerCase;
+            orig = airportCodeMap.get(orig);
+        }
         rp(flightUrl(orig,dest,date,retdate))
         .then((res)=>{
             console.log(res);
@@ -450,3 +463,36 @@ app.post('/location',(req, res)=>{
         res.send(JSON.stringify(info));
     })
 })
+
+app.post('/maptest',(req,res)=>{
+    if(airportCodeMap == null){
+        fillAirportCodes();
+    }
+    res.send(JSON.stringify({'Yay':'yay'}));
+})
+
+function fillAirportCodes(){
+    var maparray = [];
+    fs.readFile('airportcodes.txt','utf-8',function(err,data){
+        if(err){throw err;}
+        var textByLine = data.split("\n");
+        for (var line of textByLine){
+            var length = line.length;
+            var value = line.substring(length-4,length-1);
+            var slash = line.search('/');
+            var comma = line.search(',');
+            if(slash == -1){slash = 999;}
+            var key = null;
+            if(slash < comma){
+                key = line.substring(0,slash);
+            }else{
+                key = line.substring(0,comma);
+            }
+            key = key.toLowerCase();
+            var add = [key,value];
+            maparray.push(add);
+        }
+        airportCodeMap = new Map(maparray);
+        console.log(airportCodeMap.get('houston')+' we have filled the map');
+    })
+}
