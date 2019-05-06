@@ -473,7 +473,7 @@ app.post('/maptest',(req,res)=>{
 
 function fillAirportCodes(){
     var maparray = [];
-    fs.readFile('airportcodes.txt','utf-8',function(err,data){
+    fs.readFile('backend/airportcodes.txt','utf-8',function(err,data){
         if(err){throw err;}
         var textByLine = data.split("\n");
         for (var line of textByLine){
