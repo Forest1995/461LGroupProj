@@ -8,6 +8,10 @@ mongo.Promise = require('bluebird');
 var tripSchema, Trip
 var airportCodeMap = null;
 
+if(airportCodeMap == null){
+    fillAirportCodes();
+}
+
 mongo.connect(process.env.MONGODB_URI || "mongodb://localhost:27017/datastore",{
     user:process.env.mdb_user,
     pass:process.env.mdb_password,
@@ -148,9 +152,6 @@ function hotelgetLocationURL(location){
 }
 app.post('/resort',(req, res) => {
     //Request must have state, price asc and decending
-    if(airportCodeMap == null){
-        fillAirportCodes();
-    }
     let stateCode = stateDB[req.body.state];
     let price = req.body.price;
     if(price == null || stateCode == null){
