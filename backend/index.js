@@ -360,16 +360,17 @@ app.post('/flight',(req, res) => {
             return;
         }
         if(orig.length>3){
-            orig = orig.toLowerCase;
+            orig = orig.toLowerCase();
             orig = airportCodeMap.get(orig);
         }
         if(dest.length>3){
-            orig = orig.toLowerCase;
-            orig = airportCodeMap.get(orig);
+            dest = dest.toLowerCase();
+            dest = airportCodeMap.get(dest);
         }
+        console.log('arguments: '+orig+'  '+dest);
         rp(flightUrl(orig,dest,date,retdate))
         .then((res)=>{
-            console.log(res);
+            //console.log(res);
             var key = res.headers['location'];
             var datatest = null;
             // while((datatest==null)||(datatest['Itineraries'].length()<10)){
@@ -378,7 +379,9 @@ app.post('/flight',(req, res) => {
             //         datatest=response;
             //     })
             // }
-            return rp(flightgetUrl(key))
+            return sleep(300).then(()=>{
+                return rp(flightgetUrl(key));
+            })
         })
         .then((response)=>{
             data = []
@@ -478,7 +481,7 @@ function fillAirportCodes(){
         var textByLine = data.split("\n");
         for (var line of textByLine){
             var length = line.length;
-            var value = line.substring(length-4,length-1);
+            var value = line.substring(length-5,length-2);
             var slash = line.search('/');
             var comma = line.search(',');
             if(slash == -1){slash = 999;}
