@@ -440,7 +440,7 @@ app.get('/getTrip',(req, res) => {
         <tbody>
         <tr>
         <td>Dates</td>
-        <td>X to Y</td>
+        <td>${doc["start"]} to ${doc["end"]}</td>
         </tr>
         <tr>
         <td>Hotels</td>
@@ -448,7 +448,7 @@ app.get('/getTrip',(req, res) => {
         <table>
         <tbody>
         <tr>
-        <td><img src="${doc["hotel"]["imageUrl"]}" alt="" /></td>
+        <td><img height="65" width="65" src="${doc["hotel"]["imageUrl"]}" alt="" /></td>
         <td>
         <table>
         <tbody>
@@ -478,7 +478,7 @@ app.get('/getTrip',(req, res) => {
         <table>
         <tbody>
         <tr>
-        <td><img src="${doc["resort"]["imageUrl"]}" alt="" /></td>
+        <td><img height="65" width="65" src="${doc["resort"]["imageUrl"]}" alt="" /></td>
         <td>
         <table>
         <tbody>
