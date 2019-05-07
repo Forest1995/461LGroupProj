@@ -433,7 +433,106 @@ app.post('/trip',(req, res) => {
 });
 app.get('/getTrip',(req, res) => {
     Trip.findOne({_id:req.query.id}).then((doc)=>{
-        res.send(JSON.stringify(doc)); 
+        res.send(`<p>SkiTrip Itinerary</p>
+        <table>
+        <tbody>
+        <tr>
+        <td>Dates</td>
+        <td>X to Y</td>
+        </tr>
+        <tr>
+        <td>Hotels</td>
+        <td>
+        <table>
+        <tbody>
+        <tr>
+        <td><img src="${doc["hotel"]["imageUrl"]}" alt="" /></td>
+        <td>
+        <table>
+        <tbody>
+        <tr>
+        <td>${doc["hotel"]["hotel_name"]}</td>
+        </tr>
+        <tr>
+        <td>Price:${doc["hotel"]["hotel_price"]} dollars</td>
+        </tr>
+        <tr>
+        <td>${doc["hotel"]["address"]}</td>
+        </tr>
+        <tr>
+        <td>${doc["hotel"]["rating"]} stars</td>
+        </tr>
+        </tbody>
+        </table>
+        </td>
+        </tr>
+        </tbody>
+        </table>
+        </td>
+        </tr>
+        <tr>
+        <td>Resort</td>
+        <td>
+        <table>
+        <tbody>
+        <tr>
+        <td><img src="${doc["resort"]["imageUrl"]}" alt="" /></td>
+        <td>
+        <table>
+        <tbody>
+        <tr>
+        <td>${doc["resort"]["name"]}</td>
+        </tr>
+        <tr>
+        <td>${doc["resort"]["rating"]} stars</td>
+        </tr>
+        <tr>
+        <td>${doc["state"]}</td>
+        </tr>
+        </tbody>
+        </table>
+        </td>
+        </tr>
+        </tbody>
+        </table>
+        </td>
+        </tr>
+        <tr>
+        <td>Flight</td>
+        <td>&nbsp;
+        <table>
+        <tbody>
+        <tr>
+        <td><img src="${doc["flight"]["imageUrl"]}" alt="" /></td>
+        <td>
+        <table>
+        <tbody>
+        <tr>
+        <td>AirLine</td>
+        </tr>
+        <tr>
+        <td>Price:$${doc["flight"]["price"]}</td>
+        </tr>
+        <tr>
+        <td>${doc["flight"]["leave_time1"]} -&gt; ${doc["flight"]["arrive_time1"]}</td>
+        </tr>
+        <tr>
+        <td>${doc["flight"]["leave_time2"]} -&gt; ${doc["flight"]["arrive_time2"]}</td>
+        </tr>
+        <tr>
+        <td>${doc["flight"]["origin"]} to ${doc["flight"]["dest"]}</td>
+        </tr>
+        </tbody>
+        </table>
+        </td>
+        </tr>
+        </tbody>
+        </table>
+        </td>
+        </tr>
+        </tbody>
+        </table>
+        <p>&nbsp;</p>`); 
     });
 });
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))
