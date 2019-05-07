@@ -59,7 +59,11 @@ export class ServerRequest{
     }
     public postTrip(data){
         return this.apiDirectCall(this.server_url+"/trip",data).then((response : string)=>{
-            alert(response);
+            if (window.confirm('Go to Itinerary')) 
+            {
+                window.location.href=response;
+            };
+            //alert(response);
             return response;
         });
       }
