@@ -433,6 +433,8 @@ app.post('/trip',(req, res) => {
 });
 app.get('/getTrip',(req, res) => {
     Trip.findOne({_id:req.query.id}).then((doc)=>{
+        doc = JSON.parse(JSON.stringify(doc))
+        console.log(JSON.stringify(doc))
         res.send(`<p>SkiTrip Itinerary</p>
         <table>
         <tbody>
